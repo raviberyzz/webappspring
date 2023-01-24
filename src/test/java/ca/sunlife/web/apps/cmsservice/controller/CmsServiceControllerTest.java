@@ -24,15 +24,15 @@ import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 public class CmsServiceControllerTest {
 
 	@Mock
-    ApiGatewayService apiGatewayService = mock(ApiGatewayServiceImpl.class);
+    ApiGatewayService apiGatewayService; //= mock(ApiGatewayServiceImpl.class);
 
     @InjectMocks
-    CmsServiceController cmsServiceController = new CmsServiceController();
+    CmsServiceController cmsServiceController ; // = new CmsServiceController();
     
-    @SuppressWarnings("deprecation")
+    
     @BeforeEach
     public void setup() throws ParseException {
-        MockitoAnnotations.initMocks(this);    
+        MockitoAnnotations.openMocks(this);    
 
     }
     

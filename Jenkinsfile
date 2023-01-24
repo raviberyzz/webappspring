@@ -1,3 +1,6 @@
 @Library('jenkins-pipeline') _ 
 
- buildMavenPipeline{}
+ buildMavenPipeline{
+  	deploymentApplicationName = 'web-apps-cms-service'
+	stepPublishToCodeDx = 'false'
+ }

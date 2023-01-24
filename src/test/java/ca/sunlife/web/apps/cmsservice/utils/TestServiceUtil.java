@@ -21,7 +21,7 @@ public class TestServiceUtil {
 		serviceRequest.setLeadSource("QuickStart");
 		serviceRequest.setQuickStart(false);
 		serviceRequest.setLanguage("English");
-
+		serviceRequest.setPostalCode("N2H0B6");
 		return serviceRequest;
 
 	}

@@ -85,10 +85,8 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
 	private String generateUid(ServiceRequest data) {
 		Date date = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat("ddMMyyhhmmssMs");
-		String randomId = data.getLeadSource() + ft.format(date);
-		logger.info("Uid:{}", randomId);
-		return randomId;
 
+		return data.getLeadSource() + ft.format(date);
 	}
 
 	private void sendEmail(ServiceRequest data) {

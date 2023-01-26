@@ -48,42 +48,44 @@ public static boolean validateServiceRequest(ServiceRequest serviceRequest) {
         
         isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
         if(!isValid) {
-            logger.error("FirstName is not valid: {}", serviceRequest.getFirstName());
+            logger.error("FirstName is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
         if(!isValid) {
-            logger.error("LasttName is not valid: {}", serviceRequest.getLastName());
+            logger.error("LastName is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
         if(!isValid) {
-            logger.error("Email is not valid: {}", serviceRequest.getEmail());
+            logger.error("Email is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
         if(!isValid) {
-            logger.error("LeadSource is not valid: {}", serviceRequest.getLeadSource());
+            logger.error("LeadSource is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
         if(!isValid) {
-            logger.error("Language is not valid: {}", serviceRequest.getLanguage());
+            logger.error("Language is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
         if(!isValid) {
-            logger.error("Postal Code is not valid: {}", serviceRequest.getPostalCode());
+            logger.error("Postal Code is not valid");
             return isValid;
         }
         isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
         if(!isValid) {
-            logger.error("Date of Birth is not valid: {}", serviceRequest.getDateOfBirth());
+            logger.error("Date of Birth is not valid");
             return isValid;
         }
         
         return isValid;
         
     }
+
+    private ServiceUtil() {}
 
 }

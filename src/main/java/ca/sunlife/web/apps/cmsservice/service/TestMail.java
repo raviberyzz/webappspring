@@ -3,7 +3,6 @@ package ca.sunlife.web.apps.cmsservice.service;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
 public class TestMail {
 
@@ -44,7 +43,6 @@ public class TestMail {
 
          // Send message
          Transport.send(message);
-         System.out.println("Sent message successfully....");
       } catch (MessagingException mex) {
          mex.printStackTrace();
       }

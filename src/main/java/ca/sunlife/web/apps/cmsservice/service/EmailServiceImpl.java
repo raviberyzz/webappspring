@@ -10,9 +10,7 @@ import java.util.Map;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.InternetHeaders;
@@ -59,23 +57,11 @@ public class EmailServiceImpl implements EmailService{
             try {
                  Session session =
                  Session.getInstance(emailConfig.getEmailProperties(), null);
-				/*
-				 * Session session =
-				 * Session.getDefaultInstance(emailConfig.getEmailProperties(), new
-				 * javax.mail.Authenticator() {
-				 * 
-				 * @Override protected PasswordAuthentication getPasswordAuthentication() {
-				 * return new PasswordAuthentication(emailConfig.getUsername(),
-				 * emailConfig.getPassword()); } });
-				 */
-               // MimeMessage msg = new MimeMessage(session);
-              //  buildAndSendEmail(msg, serviceRequest);
-                
-                Message msg = buildEmailData(new MimeMessage(session), serviceRequest); 
-                //Transport.send(msg);
+
+                 Message msg = buildEmailData(new MimeMessage(session), serviceRequest);
+
                 transport.sendEmail(msg);
-                
-                
+
                 mailStatus = true;
                 logger.info("Email has been sent");
             } catch (AddressException ae) {
@@ -152,8 +138,7 @@ public class EmailServiceImpl implements EmailService{
         msg.setSentDate(new Date());
         msg.setContent(multipart);
         
-       // Transport.send(msg);
-        return msg;
+       return msg;
     }
     private static boolean isValidStringWithRegex(String param, String regex) {
         if (regex == null || regex.length() == 0) {

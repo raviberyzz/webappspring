@@ -23,15 +23,14 @@ import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
-public class EmailServiceImplTest {
+class EmailServiceImplTest {
 
 	@InjectMocks
     EmailConfig emailConfig;
 
     @InjectMocks
     private EmailServiceImpl emailService = new EmailServiceImpl();
-    
-    
+
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);

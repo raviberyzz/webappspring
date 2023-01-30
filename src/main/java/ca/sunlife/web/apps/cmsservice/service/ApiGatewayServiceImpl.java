@@ -58,7 +58,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         }else {
             cmsResponse = new CmsResponse();
             cmsResponse.setMessage(isValidToken ? "Something went wrong!" : "Something went wrong!  URL not valid");
-            cmsResponse.setStatusCode(400);
+            cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
             sendEmail(data);
         }        

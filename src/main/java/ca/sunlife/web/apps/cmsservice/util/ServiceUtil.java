@@ -42,48 +42,50 @@ public class ServiceUtil {
         return getJsonString(reqMap);
     }
 	
-public static boolean validateServiceRequest(ServiceRequest serviceRequest) {
+
+public static String validateServiceRequest(ServiceRequest serviceRequest) {
+    
+	   
+    boolean isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
+    if(!isValid) {
         
-        boolean isValid = true;
-        
-        isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
-        if(!isValid) {
-            logger.error("FirstName is not valid: {}", serviceRequest.getFirstName());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
-        if(!isValid) {
-            logger.error("LasttName is not valid: {}", serviceRequest.getLastName());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
-        if(!isValid) {
-            logger.error("Email is not valid: {}", serviceRequest.getEmail());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
-        if(!isValid) {
-            logger.error("LeadSource is not valid: {}", serviceRequest.getLeadSource());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
-        if(!isValid) {
-            logger.error("Language is not valid: {}", serviceRequest.getLanguage());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
-        if(!isValid) {
-            logger.error("Postal Code is not valid: {}", serviceRequest.getPostalCode());
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
-        if(!isValid) {
-            logger.error("Date of Birth is not valid: {}", serviceRequest.getDateOfBirth());
-            return isValid;
-        }
-        
-        return isValid;
+        return String.format("FirstName is not valid: %S", serviceRequest.getFirstName());
         
     }
+    isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
+    if(!isValid) {
+    	 return String.format("LasttName is not valid: %S", serviceRequest.getLastName());
+       
+    }
+    isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
+    if(!isValid) {
+    	 return String.format("Date of Birth is not valid: %S", serviceRequest.getDateOfBirth());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
+    if(!isValid) {
+    	 return String.format("Email is not valid: %S", serviceRequest.getEmail());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
+    if(!isValid) {
+    	 return String.format("LeadSource is not valid: %S", serviceRequest.getLeadSource());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
+    if(!isValid) {
+    	 return String.format("Language is not valid: %S", serviceRequest.getLanguage());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
+    if(!isValid) {
+    	 return String.format("Postal Code is not valid: %S", serviceRequest.getPostalCode());
+       
+    }
+    
+    
+    return "Success";
+    
+}
 
 }

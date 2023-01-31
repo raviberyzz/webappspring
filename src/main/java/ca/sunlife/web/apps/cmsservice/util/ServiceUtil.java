@@ -82,10 +82,50 @@ public static String validateServiceRequest(ServiceRequest serviceRequest) {
     	 return String.format("Postal Code is not valid: %S", serviceRequest.getPostalCode());
        
     }
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getIncome()).matches();
+    if(!isValid) {
+    	 return String.format("Income input should be less than 7 and shouldn't be negative or empty values: %S", serviceRequest.getIncome());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlyExpenses()).matches();
+    if(!isValid) {
+    	 return String.format("Monthly Expense input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlyExpenses());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlySavings()).matches();
+    if(!isValid) {
+    	 return String.format("Monthly Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlySavings());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getSavings()).matches();
+    if(!isValid) {
+    	 return String.format("Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getSavings());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getAssets()).matches();
+    if(!isValid) {
+    	 return String.format("Assets input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getAssets());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getDebts()).matches();
+    if(!isValid) {
+    	 return String.format("Debts input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getDebts());
+       
+    }
     
     
-    return "Success";
+   return  "Success";
+    
+    
+    
     
 }
+
+
 
 }

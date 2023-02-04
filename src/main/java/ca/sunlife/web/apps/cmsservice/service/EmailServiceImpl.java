@@ -193,7 +193,7 @@ public class EmailServiceImpl implements EmailService{
 
         // Attachment
         MimeBodyPart mimeAttachment = new MimeBodyPart(fileHeaders, base64ByteArray);
-        mimeAttachment.setFileName("assessment.txt");
+        mimeAttachment.setFileName("prosprlead.txt");
         return mimeAttachment;
     }
     

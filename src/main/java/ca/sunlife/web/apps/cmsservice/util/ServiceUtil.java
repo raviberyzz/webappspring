@@ -42,49 +42,88 @@ public class ServiceUtil {
         return getJsonString(reqMap);
     }
 	
-public static boolean validateServiceRequest(ServiceRequest serviceRequest) {
+
+public static String validateServiceRequest(ServiceRequest serviceRequest) {
+    
+	   
+    boolean isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
+    if(!isValid) {
         
-        boolean isValid = true;
-        
-        isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
-        if(!isValid) {
-            logger.error("FirstName is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
-        if(!isValid) {
-            logger.error("LastName is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
-        if(!isValid) {
-            logger.error("Email is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
-        if(!isValid) {
-            logger.error("LeadSource is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
-        if(!isValid) {
-            logger.error("Language is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
-        if(!isValid) {
-            logger.error("Postal Code is not valid");
-            return isValid;
-        }
-        isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
-        if(!isValid) {
-            logger.error("Date of Birth is not valid");
-            return isValid;
-        }
-        
-        return isValid;
+        return String.format("FirstName is not valid: %S", serviceRequest.getFirstName());
         
     }
+    isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
+    if(!isValid) {
+    	 return String.format("LasttName is not valid: %S", serviceRequest.getLastName());
+       
+    }
+    isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
+    if(!isValid) {
+    	 return String.format("Date of Birth is not valid: %S", serviceRequest.getDateOfBirth());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
+    if(!isValid) {
+    	 return String.format("Email is not valid: %S", serviceRequest.getEmail());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
+    if(!isValid) {
+    	 return String.format("LeadSource is not valid: %S", serviceRequest.getLeadSource());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
+    if(!isValid) {
+    	 return String.format("Language is not valid: %S", serviceRequest.getLanguage());
+        
+    }
+    isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
+    if(!isValid) {
+    	 return String.format("Postal Code is not valid: %S", serviceRequest.getPostalCode());
+       
+    }
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getIncome()).matches();
+    if(!isValid) {
+    	 return String.format("Income input should be less than 7 and shouldn't be negative or empty values: %S", serviceRequest.getIncome());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlyExpenses()).matches();
+    if(!isValid) {
+    	 return String.format("Monthly Expense input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlyExpenses());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlySavings()).matches();
+    if(!isValid) {
+    	 return String.format("Monthly Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlySavings());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getSavings()).matches();
+    if(!isValid) {
+    	 return String.format("Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getSavings());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getAssets()).matches();
+    if(!isValid) {
+    	 return String.format("Assets input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getAssets());
+       
+    }
+    
+    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getDebts()).matches();
+    if(!isValid) {
+    	 return String.format("Debts input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getDebts());
+       
+    }
+    
+    
+   return  "Success";
+    
+}
+
+
 
     private ServiceUtil() {}
 

@@ -8,17 +8,17 @@ public class ServiceRequest {
 
 	private String dateOfBirth;
 
-	private double income;
+	private String income;
 
-	private double monthlyExpenses;
+	private String monthlyExpenses;
 
-	private double monthlySavings;
+	private String monthlySavings;
 
-	private double savings;
+	private String savings;
 
-	private double assets;
+	private String assets;
 
-	private double debts;
+	private String debts;
 
 	private String email;
 
@@ -48,51 +48,51 @@ public class ServiceRequest {
 		this.lastName = lastName;
 	}
 
-	public double getIncome() {
+	public String getIncome() {
 		return income;
 	}
 
-	public void setIncome(double income) {
+	public void setIncome(String income) {
 		this.income = income;
 	}
 
-	public double getMonthlyExpenses() {
+	public String getMonthlyExpenses() {
 		return monthlyExpenses;
 	}
 
-	public void setMonthlyExpenses(double monthlyExpenses) {
+	public void setMonthlyExpenses(String monthlyExpenses) {
 		this.monthlyExpenses = monthlyExpenses;
 	}
 
-	public double getMonthlySavings() {
+	public String getMonthlySavings() {
 		return monthlySavings;
 	}
 
-	public void setMonthlySavings(double monthlySavings) {
+	public void setMonthlySavings(String monthlySavings) {
 		this.monthlySavings = monthlySavings;
 	}
 
-	public double getSavings() {
+	public String getSavings() {
 		return savings;
 	}
 
-	public void setSavings(double savings) {
+	public void setSavings(String savings) {
 		this.savings = savings;
 	}
 
-	public double getAssets() {
+	public String getAssets() {
 		return assets;
 	}
 
-	public void setAssets(double assets) {
+	public void setAssets(String assets) {
 		this.assets = assets;
 	}
 
-	public double getDebts() {
+	public String getDebts() {
 		return debts;
 	}
 
-	public void setDebts(double debts) {
+	public void setDebts(String debts) {
 		this.debts = debts;
 	}
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60">
+	<Properties>
+		<Property name="path">/logs/waslb/${sys:websphere.Env}/${sys:websphere.Lob}/${sys:websphere.Instance}/${sys:websphere.Name}/cmsapiservice</Property>
+		<Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] [%c{1}] - %msg%n</Property>
+		<Property name="filePatternLayout">%d %-5p (%t) [%c{1}] %m%n</Property>
+	</Properties>
+
+	<!-- ================================================ -->
+	<!-- file appender                                    -->
+	<!-- ================================================ -->
+
+	<Appenders>
+		<Console name="CONSOLE" target="FILE">
+		  <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+		</Console>
+
+		<RollingFile name="FILE" bufferedIO="true" fileName="${path}/serviceapp.log" filePattern="${path}/serviceapp.log.%d{yyyy-MM-dd}">
+			<PatternLayout pattern="${LOG_PATTERN}" />
+			<TimeBasedTriggeringPolicy interval="1"	modulate="true" />
+			<DefaultRolloverStrategy max="30" />
+		</RollingFile>
+
+	</Appenders>
+
+		<!-- ============================================================== -->
+		<!-- Loggers                                                        -->
+		<!-- Please use the FILE appender instead of CONSOLE for production -->
+		<!-- *** Avoid duplicated logs with additivity="false"              -->
+		<!-- ============================================================== -->
+		
+	<Loggers>
+		
+		<Root level="ERROR">
+			<AppenderRef ref="FILE" />
+		</Root>
+		
+	</Loggers>
+	
+</Configuration>

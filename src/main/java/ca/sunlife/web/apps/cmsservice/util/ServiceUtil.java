@@ -18,7 +18,9 @@ public class ServiceUtil {
 	private static final Logger logger = LogManager.getLogger(ServiceUtil.class);
 	
 	public static String getJsonString(Object obj) throws JsonProcessingException {
+		logger.info("in ServiceUtil.getJsonString");
         ObjectMapper mapper = new ObjectMapper();
+        logger.info("obj as str: " + mapper.writeValueAsString(obj));
         return mapper.writeValueAsString(obj);
     }
 	
@@ -44,7 +46,7 @@ public class ServiceUtil {
 	
 
 public static String validateServiceRequest(ServiceRequest serviceRequest) {
-    
+    logger.info("in ServiceUtil.validateServiceRequst");
 	   
     boolean isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
     if(!isValid) {
@@ -118,11 +120,7 @@ public static String validateServiceRequest(ServiceRequest serviceRequest) {
        
     }
     
-    
    return  "Success";
-    
-    
-    
     
 }
 

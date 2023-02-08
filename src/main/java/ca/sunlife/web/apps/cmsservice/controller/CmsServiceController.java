@@ -29,8 +29,11 @@ public class CmsServiceController {
 	
     @PostMapping(value = "/submit")
     public CmsResponse submit(@RequestBody ServiceRequest data) throws JsonProcessingException {
+    	logger.info("in CmsServiceController");
     	CmsResponse cmsresponse =null;    
     	String Validresponse = ServiceUtil.validateServiceRequest(data);
+    	logger.info("Validresponse: " + Validresponse);
+    	
     	if(Validresponse.equals("Success")) {
     		cmsresponse= apiGatewayService.sendData(data);
     	}else {

@@ -22,6 +22,7 @@ public class GlobalExceptionHandler {
 		ExceptionResponse response = new ExceptionResponse();
 		response.setDateTime(LocalDateTime.now());
 		response.setMessage(exception.getMessage());
+		logger.error("Exception mgs: " + exception.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 }

@@ -3,6 +3,7 @@ package ca.sunlife.web.apps.cmsservice.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
 @RestController
 
 @RequestMapping(value = "/cms-service/")
+@CrossOrigin
 public class CmsServiceController {
 	
 	private static final Logger logger = LogManager.getLogger(CmsServiceController.class);
@@ -29,8 +31,11 @@ public class CmsServiceController {
 	
     @PostMapping(value = "/submit")
     public CmsResponse submit(@RequestBody ServiceRequest data) throws JsonProcessingException {
+    	logger.info("in CmsServiceController");
     	CmsResponse cmsresponse =null;    
     	String Validresponse = ServiceUtil.validateServiceRequest(data);
+    	logger.info("Validresponse: " + Validresponse);
+    	
     	if(Validresponse.equals("Success")) {
     		cmsresponse= apiGatewayService.sendData(data);
     	}else {

@@ -46,9 +46,7 @@ public class EmailConfig {
     public Properties getEmailProperties() {
         Properties props = new Properties();
         props.put("mail.host", emailHost);
-        //props.put("mail.smtp.port", emailPort);
-        //props.put("mail.smtp.starttls.enable", isStarttlsEnabled);
-        //props.put("mail.smtp.auth", isAuth );
+
         return props;
     }
 

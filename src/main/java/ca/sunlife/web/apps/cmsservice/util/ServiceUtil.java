@@ -132,4 +132,6 @@ public static String validateServiceRequest(ServiceRequest serviceRequest) {
 
 
 
+    private ServiceUtil() {}
+
 }

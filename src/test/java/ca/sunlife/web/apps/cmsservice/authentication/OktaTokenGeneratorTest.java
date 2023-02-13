@@ -23,7 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import ca.sunlife.web.apps.cmsservice.model.OktaResponse;
 
 @SpringBootTest
-public class OktaTokenGeneratorTest {
+class OktaTokenGeneratorTest {
 
 	@Mock
     private RestTemplate restTemplate = mock(RestTemplate.class);
@@ -44,9 +44,9 @@ public class OktaTokenGeneratorTest {
         ReflectionTestUtils.setField(oktaTokenGenerator, "scope", "scope");
         
         OktaResponse oktaResponse = new OktaResponse();
-        oktaResponse.setAccess_token("11111");
+        oktaResponse.setAccessToken("11111");
         oktaResponse.setScope("scope");
-        oktaResponse.setToken_type("credential");
+        oktaResponse.setTokenType("credential");
         
         when(restTemplate.postForEntity(Mockito.any(String.class), 
                 Mockito.any(HttpEntity.class),

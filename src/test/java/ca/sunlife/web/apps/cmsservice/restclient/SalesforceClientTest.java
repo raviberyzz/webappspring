@@ -30,7 +30,7 @@ import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
 import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
-public class SalesforceClientTest {
+class SalesforceClientTest {
 	
 	@Mock
     private RestTemplate restTemplate = mock(RestTemplate.class);

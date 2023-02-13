@@ -1,9 +1,6 @@
 package ca.sunlife.web.apps.cmsservice.authentication;
 
 import java.util.Base64;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -38,8 +35,7 @@ public class OktaTokenGenerator {
 	
 	@Autowired
 	RestTemplate restTemplate;
-	
-	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
+
 
 	public String generateToken() {
 		OktaResponse oktaResponse = null;
@@ -53,7 +49,6 @@ public class OktaTokenGenerator {
 			header.add("Accept", "application/json");
 			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 			body.add("grant_type", grantType);
-			body.add("scope", scope);
 			HttpEntity<MultiValueMap<String, String>> requestHttp = new HttpEntity<>(body, header);
 					ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpoint, requestHttp,
 					OktaResponse.class);
@@ -62,7 +57,7 @@ public class OktaTokenGenerator {
 		} catch (RestClientException ex) {
 			ex.printStackTrace();
 		}
-		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
+		return oktaResponse != null ? oktaResponse.getAccessToken() : null;
 
 	}
 

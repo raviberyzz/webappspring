@@ -24,7 +24,7 @@ import ca.sunlife.web.apps.cmsservice.restclient.SalesforceClient;
 import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
-public class ApiGatewayServiceImplTest {
+class ApiGatewayServiceImplTest {
 	
 	@Mock
     private SalesforceClient salesforceClient = mock(SalesforceClient.class);

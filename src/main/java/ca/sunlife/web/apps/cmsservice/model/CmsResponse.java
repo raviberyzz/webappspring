@@ -37,29 +37,5 @@ public class CmsResponse {
 		this.data = data;
 	}
 
-	public static ResponseObjBuilder builder() {
-		return new ResponseObjBuilder();
-		}
-	
-	public static class ResponseObjBuilder {
-		
-		private int statusCode = 400;
-		
-		private String message = "Default";
-		
-		private Object data = null;
-		
-		public ResponseObjBuilder ok(Object data) {
-			this.statusCode = 200;
-			this.message = "Data Stored Successfully";
-			this.data= data;
-			return this;
-			
-		}
-		
-		//public ResponseObj build() {
-			//return new ResponseObj(statusCode, message, data);
-		//}
-	}
 
 }

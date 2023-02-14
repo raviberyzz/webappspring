@@ -1,12 +1,16 @@
 package ca.sunlife.web.apps.cmsservice.controller;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
@@ -48,5 +52,13 @@ public class CmsServiceController {
     	}
     	return cmsresponse;
     	
+    }
+    
+    @PostMapping(value = "form-submit", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
+    public CmsResponse formSubmit(@RequestParam Map<String,String> paramMap) throws JsonProcessingException{
+    	logger.info("In form-Submit");
+    	ServiceUtil.validateFormField(paramMap);
+    	return apiGatewayService.sendData(ServiceUtil.getServiceRequest(paramMap));
+        
     }
 }

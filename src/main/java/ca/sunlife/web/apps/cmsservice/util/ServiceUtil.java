@@ -6,131 +6,141 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ca.sunlife.web.apps.cmsservice.exception.FieldNotFoundException;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 
-
 public class ServiceUtil {
-	
+
 	private static final Logger logger = LogManager.getLogger(ServiceUtil.class);
-	
+
 	public static String getJsonString(Object obj) throws JsonProcessingException {
 		logger.info("in ServiceUtil.getJsonString");
-        ObjectMapper mapper = new ObjectMapper();
-        logger.info("obj as str: " + mapper.writeValueAsString(obj));
-        return mapper.writeValueAsString(obj);
-    }
-	
+		ObjectMapper mapper = new ObjectMapper();
+		String result = mapper.writeValueAsString(obj);
+		logger.info("obj as str:{}", result);
+		return result;
+	}
+
 	public static String getSalesForceJsonString(ServiceRequest serviceRequest) throws JsonProcessingException {
-        Map<String, Object> reqMap = new HashMap<>();
-        reqMap.put("FirstName", serviceRequest.getFirstName());
-        reqMap.put("LastName", serviceRequest.getLastName());
-        reqMap.put("CA_Birth_Date__c", serviceRequest.getDateOfBirth());
-        reqMap.put("CA_Income__c", serviceRequest.getIncome());
-        reqMap.put("CA_Monthly_Expenses__c", serviceRequest.getMonthlyExpenses());
-        reqMap.put("CA_Monthly_Savings__c", serviceRequest.getMonthlySavings());
-        reqMap.put("CA_Savings__c", serviceRequest.getSavings());
-        reqMap.put("CA_Assets__c", serviceRequest.getAssets());
-        reqMap.put("CA_Debts__c", serviceRequest.getDebts());
-        reqMap.put("Email", serviceRequest.getEmail());
-        reqMap.put("LeadSource", serviceRequest.getLeadSource());
-        reqMap.put("CA_QuickStart_Lead__c", serviceRequest.getLeadSource()== null ? Boolean.FALSE: serviceRequest.getLeadSource().indexOf("QuickStart")>-1);
-        reqMap.put("Language__c", serviceRequest.getLanguage());
-        reqMap.put("PostalCode", serviceRequest.getPostalCode());
-        reqMap.put("id", serviceRequest.getId());
-        return getJsonString(reqMap);
-    }
+		Map<String, Object> reqMap = new HashMap<>();
+		reqMap.put("FirstName", serviceRequest.getFirstName());
+		reqMap.put("LastName", serviceRequest.getLastName());
+		reqMap.put("CA_Birth_Date__c", serviceRequest.getDateOfBirth());
+		reqMap.put("CA_Income__c", serviceRequest.getIncome());
+		reqMap.put("CA_Monthly_Expenses__c", serviceRequest.getMonthlyExpenses());
+		reqMap.put("CA_Monthly_Savings__c", serviceRequest.getMonthlySavings());
+		reqMap.put("CA_Savings__c", serviceRequest.getSavings());
+		reqMap.put("CA_Assets__c", serviceRequest.getAssets());
+		reqMap.put("CA_Debts__c", serviceRequest.getDebts());
+		reqMap.put("Email", serviceRequest.getEmail());
+		reqMap.put("LeadSource", serviceRequest.getLeadSource());
+		reqMap.put("CA_QuickStart_Lead__c", serviceRequest.getLeadSource() == null ? Boolean.FALSE
+				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
+		reqMap.put("Language__c", serviceRequest.getLanguage());
+		reqMap.put("PostalCode", serviceRequest.getPostalCode());
+		reqMap.put("id", serviceRequest.getId());
+		return getJsonString(reqMap);
+	}
+
+	public static String validateServiceRequest(ServiceRequest serviceRequest) {
+		logger.info("in ServiceUtil.validateServiceRequst");
+		boolean isValid = false;
+
+		validateField("firstName", serviceRequest.getFirstName(), true, ServiceConstants.NAME_REGEXP);
+
+		validateField("lastName", serviceRequest.getLastName(), true, ServiceConstants.NAME_REGEXP);
+
+		validateField("dateOfBirth", serviceRequest.getDateOfBirth(), true, ServiceConstants.DOB_REGEXP);
+
+		validateField("email", serviceRequest.getEmail(), true, ServiceConstants.EMAIL_REGEXP);
+
+		validateField("leadSource", serviceRequest.getLeadSource(), true, ServiceConstants.LANG_REGEXP);
+
+		validateField("language", serviceRequest.getLanguage(), true, ServiceConstants.LANG_REGEXP);
+
+		validateField("postalCode", serviceRequest.getPostalCode(), true, ServiceConstants.POSTAL_REGEXP);
+
+		validateCurrencyField("income", serviceRequest.getIncome(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		validateCurrencyField("monthlyExpenses", serviceRequest.getMonthlyExpenses(), true,
+				ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		validateCurrencyField("monthlySavings", serviceRequest.getMonthlySavings(), true,
+				ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		validateCurrencyField("savings", serviceRequest.getSavings(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		validateCurrencyField("assets", serviceRequest.getAssets(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		validateCurrencyField("debts", serviceRequest.getDebts(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
+
+		return "Success";
+
+	}
+
+	public static boolean validateField(String fieldName, String fieldVal, boolean isRequired, String regExStr)
+			throws FieldNotFoundException {
+		boolean isValid = true;
+		if (fieldVal != null) {
+			isValid = Pattern.compile(regExStr).matcher(fieldVal).matches();
+		}
+
+		if (isRequired && (fieldVal == null || !isValid)) {
+			throw new FieldNotFoundException(String.format("%S is not found/ invalid : %S", fieldName, fieldVal));
+		}
+		return isValid;
+	}
+
+	public static boolean validateCurrencyField(String fieldName, String fieldVal, boolean isRequired, String regExStr)
+			throws FieldNotFoundException {
+		boolean isValid = true;
+		if (fieldVal != null) {
+			isValid = Pattern.compile(regExStr).matcher(fieldVal).matches();
+		}
+
+		if (isRequired && (fieldVal == null || fieldVal.trim().isEmpty() || !isValid)) {
+			throw new FieldNotFoundException(String.format(
+					"%S input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S",
+					fieldName, fieldVal));
+		}
+		return isValid;
+	}
+
+	public static ServiceRequest getServiceRequest(Map<String, String> map) {
+		ServiceRequest serviceRequest = new ServiceRequest();
+		serviceRequest.setFirstName(map.get("firstName"));
+		serviceRequest.setLastName(map.get("lastName"));
+		serviceRequest.setEmail(map.get("email"));
+		serviceRequest.setLeadSource(getEmptyStringForNull(map.get("lead_source")));
+		serviceRequest.setDateOfBirth("");
+		serviceRequest.setIncome("0");
+		serviceRequest.setMonthlyExpenses("0");
+		serviceRequest.setMonthlySavings("0");
+		serviceRequest.setSavings("0");
+		serviceRequest.setAssets("0");
+		serviceRequest.setDebts("0");
+		serviceRequest.setLanguage("");
+		serviceRequest.setPostalCode("");
+		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
+				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
+
+		return serviceRequest;
+	}
+
+	public static String getEmptyStringForNull(String val) {
+		return val == null ? "" : val;
+	}
 	
-
-public static String validateServiceRequest(ServiceRequest serviceRequest) {
-    logger.info("in ServiceUtil.validateServiceRequst");
-	   
-    boolean isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getFirstName()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: firstname; valid: " + isValid);
-    if(!isValid) {
-        return String.format("FirstName is not valid: %S", serviceRequest.getFirstName());
-    }
-
-    isValid = Pattern.compile(ServiceConstants.NAME_REGEXP).matcher(serviceRequest.getLastName()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: lastname; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("LasttName is not valid: %S", serviceRequest.getLastName());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.DOB_REGEXP).matcher(serviceRequest.getDateOfBirth()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: DOB; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Date of Birth is not valid: %S", serviceRequest.getDateOfBirth());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.EMAIL_REGEXP).matcher(serviceRequest.getEmail()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: email; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Email is not valid: %S", serviceRequest.getEmail());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLeadSource()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: lead; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("LeadSource is not valid: %S", serviceRequest.getLeadSource());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.LANG_REGEXP).matcher(serviceRequest.getLanguage()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: lang; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Language is not valid: %S", serviceRequest.getLanguage());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.POSTAL_REGEXP).matcher(serviceRequest.getPostalCode()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: postal code; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Postal Code is not valid: %S", serviceRequest.getPostalCode());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getIncome()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: income; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Income input should be less than 7 and shouldn't be negative or empty values: %S", serviceRequest.getIncome());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlyExpenses()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: monthly exp; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Monthly Expense input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlyExpenses());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getMonthlySavings()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: monthly savings; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Monthly Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getMonthlySavings());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getSavings()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: savings; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Savings input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getSavings());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getAssets()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: assets; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Assets input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getAssets());
-    }
-    
-    isValid = Pattern.compile(ServiceConstants.CUR_VALIDATION_REGEXP).matcher(serviceRequest.getDebts()).matches();
-    logger.info("in ServiceUtil.validateServiceRequst: debts; valid: " + isValid);
-    if(!isValid) {
-    	 return String.format("Debts input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S", serviceRequest.getDebts());
-    }
-    
-   return  "Success";
-    
-}
-
-
+	public static boolean validateFormField(Map<String, String> paramMap) {
+		ServiceUtil.validateField("firstName", paramMap.get("firstName") , true, ServiceConstants.NAME_REGEXP);
+    	ServiceUtil.validateField("lastName", paramMap.get("lastName"), true, ServiceConstants.NAME_REGEXP);
+    	ServiceUtil.validateField("email",paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
+		return true;
+		
+	}
 
     private ServiceUtil() {}
 

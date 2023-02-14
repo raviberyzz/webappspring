@@ -12,8 +12,19 @@ import ca.sunlife.web.apps.cmsservice.model.ExceptionResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
 	private static final Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
-	
+
+	@ExceptionHandler({ FieldNotFoundException.class })
+	public ResponseEntity<Object> handleFieldException(FieldNotFoundException ex) {
+		logger.info("Field Exception Handler");
+		logger.error(ex.getMessage());
+		ExceptionResponse response = new ExceptionResponse();
+		response.setDateTime(LocalDateTime.now());
+		response.setMessage(ex.getMessage());
+		return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleExceptions(Exception exception) {
 		logger.error("error: in GlobalExceptionHandler");

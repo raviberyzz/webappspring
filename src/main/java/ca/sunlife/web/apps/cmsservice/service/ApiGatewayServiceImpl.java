@@ -2,6 +2,8 @@ package ca.sunlife.web.apps.cmsservice.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+
 import javax.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,7 +66,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         }        
         return cmsResponse;
     }
-
+   
     private boolean authenticateToken() {
         CmsResponse cmsResponse = null;
         String token = oktaTokenGenerator.generateToken();
@@ -99,6 +101,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         	logger.error("Email failed: {}", ex.getMessage());
         }        
     }
+	
 
 
 }

@@ -135,8 +135,8 @@ public class ServiceUtil {
 	}
 	
 	public static boolean validateFormField(Map<String, String> paramMap) {
-		ServiceUtil.validateField("firstName", paramMap.get("firstName") , true, ServiceConstants.NAME_REGEXP);
-    	ServiceUtil.validateField("lastName", paramMap.get("lastName"), true, ServiceConstants.NAME_REGEXP);
+		ServiceUtil.validateField("firstName", paramMap.get("first_name") , true, ServiceConstants.NAME_REGEXP);
+    	ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
     	ServiceUtil.validateField("email",paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
 		return true;
 		

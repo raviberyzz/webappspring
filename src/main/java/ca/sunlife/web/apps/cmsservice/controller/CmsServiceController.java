@@ -19,7 +19,7 @@ import ca.sunlife.web.apps.cmsservice.service.ApiGatewayService;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
 
 /**
- * @author as42
+ * @author Uma Maheshwaran
  *
  */
 @RestController
@@ -57,12 +57,9 @@ public class CmsServiceController {
     @PostMapping(value = "form-submit", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public CmsResponse formSubmit(@RequestParam Map<String,String> paramMap) throws JsonProcessingException{
     	logger.info("In form-Submit");
-    	CmsResponse cmsresponse  = new CmsResponse();
-		cmsresponse.setMessage("Success");
-		cmsresponse.setStatusCode(200);
-		return cmsresponse;
-    	//ServiceUtil.validateFormField(paramMap);
-    	//return apiGatewayService.sendData(ServiceUtil.getServiceRequest(paramMap));
+    	
+    	ServiceUtil.validateFormField(paramMap);
+    	return apiGatewayService.sendData(ServiceUtil.getServiceRequest(paramMap));
         
     }
 }

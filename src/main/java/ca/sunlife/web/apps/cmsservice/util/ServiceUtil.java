@@ -111,8 +111,8 @@ public class ServiceUtil {
 
 	public static ServiceRequest getServiceRequest(Map<String, String> map) {
 		ServiceRequest serviceRequest = new ServiceRequest();
-		serviceRequest.setFirstName(map.get("firstName"));
-		serviceRequest.setLastName(map.get("lastName"));
+		serviceRequest.setFirstName(map.get("first_name"));
+		serviceRequest.setLastName(map.get("last_name"));
 		serviceRequest.setEmail(map.get("email"));
 		serviceRequest.setLeadSource(getEmptyStringForNull(map.get("lead_source")));
 		serviceRequest.setDateOfBirth("");

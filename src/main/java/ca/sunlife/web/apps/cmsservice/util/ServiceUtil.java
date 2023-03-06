@@ -59,7 +59,7 @@ public class ServiceUtil {
 
 		validateField("leadSource", serviceRequest.getLeadSource(), true, ServiceConstants.LANG_REGEXP);
 
-		validateField("language", serviceRequest.getLanguage(), true, ServiceConstants.LANG_REGEXP);
+		validateField("language", serviceRequest.getLanguage(), true, ServiceConstants.LANGUAGE_REGEXP);
 
 		validateField("postalCode", serviceRequest.getPostalCode(), true, ServiceConstants.POSTAL_REGEXP);
 

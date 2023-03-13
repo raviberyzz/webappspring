@@ -1,28 +1,23 @@
 package ca.sunlife.web.apps.cmsservice.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-
 import javax.mail.MessagingException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
+import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
 import ca.sunlife.web.apps.cmsservice.restclient.SalesforceClient;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
-import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
 
 
 @Service

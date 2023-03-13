@@ -3,8 +3,11 @@ package ca.sunlife.web.apps.cmsservice.service;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import java.text.ParseException;
+
 import javax.mail.MessagingException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,16 +19,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
-import ca.sunlife.web.apps.cmsservice.restclient.SalesforceClient;
 import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
+
 public class ApiGatewayServiceImplTest {
+
 
 	@Mock
 	private KafkaClient kafkaClient = mock(KafkaClient.class);

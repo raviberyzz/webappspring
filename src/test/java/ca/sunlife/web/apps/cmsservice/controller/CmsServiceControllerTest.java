@@ -21,7 +21,7 @@ import ca.sunlife.web.apps.cmsservice.service.ApiGatewayServiceImpl;
 import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
-public class CmsServiceControllerTest {
+class CmsServiceControllerTest {
 
 	@Mock
     ApiGatewayService apiGatewayService; //= mock(ApiGatewayServiceImpl.class);

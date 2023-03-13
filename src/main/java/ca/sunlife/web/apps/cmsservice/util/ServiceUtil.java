@@ -1,5 +1,7 @@
 package ca.sunlife.web.apps.cmsservice.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -45,9 +47,27 @@ public class ServiceUtil {
 		return getJsonString(reqMap);
 	}
 
+	public static String getLeadJsonString(ServiceRequest serviceRequest) throws JsonProcessingException {
+		Map<String, Object> reqMap = new HashMap<>();
+		reqMap.put("FirstName", serviceRequest.getFirstName());
+		reqMap.put("LastName", serviceRequest.getLastName());
+		reqMap.put("Birth_Date", serviceRequest.getDateOfBirth());
+		reqMap.put("Income", serviceRequest.getIncome());
+		reqMap.put("Monthly_Expenses", serviceRequest.getMonthlyExpenses());
+		reqMap.put("Monthly_Savings", serviceRequest.getMonthlySavings());
+		reqMap.put("Savings", serviceRequest.getSavings());
+		reqMap.put("Assets", serviceRequest.getAssets());
+		reqMap.put("Debts", serviceRequest.getDebts());
+		reqMap.put("Email", serviceRequest.getEmail());
+		reqMap.put("LeadSource", serviceRequest.getLeadSource());
+		reqMap.put("Language", serviceRequest.getLanguage());
+		reqMap.put("PostalCode", serviceRequest.getPostalCode());
+		reqMap.put("LeadID", generateUid(serviceRequest));
+		return getJsonString(reqMap);
+	}
+
 	public static String validateServiceRequest(ServiceRequest serviceRequest) {
 		logger.info("in ServiceUtil.validateServiceRequst");
-		boolean isValid = false;
 
 		validateField("firstName", serviceRequest.getFirstName(), true, ServiceConstants.NAME_REGEXP);
 
@@ -57,32 +77,29 @@ public class ServiceUtil {
 
 		validateField("email", serviceRequest.getEmail(), true, ServiceConstants.EMAIL_REGEXP);
 
+		validateCurrencyField("income", serviceRequest.getIncome(), true);
+
+		validateCurrencyField("monthlyExpenses", serviceRequest.getMonthlyExpenses(), true);
+
+		validateCurrencyField("monthlySavings", serviceRequest.getMonthlySavings(), true);
+
+		validateCurrencyField("savings", serviceRequest.getSavings(), true);
+
+		validateCurrencyField("assets", serviceRequest.getAssets(), true);
+
+		validateCurrencyField("debts", serviceRequest.getDebts(), true);
+
 		validateField("leadSource", serviceRequest.getLeadSource(), true, ServiceConstants.LANG_REGEXP);
 
 		validateField("language", serviceRequest.getLanguage(), true, ServiceConstants.LANG_REGEXP);
 
 		validateField("postalCode", serviceRequest.getPostalCode(), true, ServiceConstants.POSTAL_REGEXP);
 
-		validateCurrencyField("income", serviceRequest.getIncome(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
-
-		validateCurrencyField("monthlyExpenses", serviceRequest.getMonthlyExpenses(), true,
-				ServiceConstants.CUR_VALIDATION_REGEXP);
-
-		validateCurrencyField("monthlySavings", serviceRequest.getMonthlySavings(), true,
-				ServiceConstants.CUR_VALIDATION_REGEXP);
-
-		validateCurrencyField("savings", serviceRequest.getSavings(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
-
-		validateCurrencyField("assets", serviceRequest.getAssets(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
-
-		validateCurrencyField("debts", serviceRequest.getDebts(), true, ServiceConstants.CUR_VALIDATION_REGEXP);
-
 		return "Success";
 
 	}
 
-	public static boolean validateField(String fieldName, String fieldVal, boolean isRequired, String regExStr)
-			throws FieldNotFoundException {
+	public static boolean validateField(String fieldName, String fieldVal, boolean isRequired, String regExStr) {
 		boolean isValid = true;
 		if (fieldVal != null) {
 			isValid = Pattern.compile(regExStr).matcher(fieldVal).matches();
@@ -94,14 +111,10 @@ public class ServiceUtil {
 		return isValid;
 	}
 
-	public static boolean validateCurrencyField(String fieldName, String fieldVal, boolean isRequired, String regExStr)
-			throws FieldNotFoundException {
+	public static boolean validateCurrencyField(String fieldName, int fieldVal, boolean isRequired) {
 		boolean isValid = true;
-		if (fieldVal != null) {
-			isValid = Pattern.compile(regExStr).matcher(fieldVal).matches();
-		}
 
-		if (isRequired && (fieldVal == null || fieldVal.trim().isEmpty() || !isValid)) {
+		if (isRequired && (fieldVal < 0 || countDigits(fieldVal) > 8)) {
 			throw new FieldNotFoundException(String.format(
 					"%S input should be less than or equal to 7 numeric digit and shouldn't be negative or empty values: %S",
 					fieldName, fieldVal));
@@ -116,12 +129,12 @@ public class ServiceUtil {
 		serviceRequest.setEmail(map.get("email"));
 		serviceRequest.setLeadSource(getEmptyStringForNull(map.get("lead_source")));
 		serviceRequest.setDateOfBirth("");
-		serviceRequest.setIncome("0");
-		serviceRequest.setMonthlyExpenses("0");
-		serviceRequest.setMonthlySavings("0");
-		serviceRequest.setSavings("0");
-		serviceRequest.setAssets("0");
-		serviceRequest.setDebts("0");
+		serviceRequest.setIncome(0);
+		serviceRequest.setMonthlyExpenses(0);
+		serviceRequest.setMonthlySavings(0);
+		serviceRequest.setSavings(0);
+		serviceRequest.setAssets(0);
+		serviceRequest.setDebts(0);
 		serviceRequest.setLanguage("");
 		serviceRequest.setPostalCode("");
 		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
@@ -133,13 +146,33 @@ public class ServiceUtil {
 	public static String getEmptyStringForNull(String val) {
 		return val == null ? "" : val;
 	}
-	
+
 	public static boolean validateFormField(Map<String, String> paramMap) {
-		ServiceUtil.validateField("firstName", paramMap.get("first_name") , true, ServiceConstants.NAME_REGEXP);
-    	ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
-    	ServiceUtil.validateField("email",paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
+		ServiceUtil.validateField("firstName", paramMap.get("first_name"), true, ServiceConstants.NAME_REGEXP);
+		ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
+		ServiceUtil.validateField("email", paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
 		return true;
-		
+
+	}
+
+	private static String generateUid(ServiceRequest data) {
+		Date date = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("ddMMyyhhmmssMs");
+		String randomId = data.getLeadSource() + ft.format(date);
+		logger.info("Uid:{}", randomId);
+		return randomId;
+
+	}
+
+	public static int countDigits(int n) {
+		int count = 0;
+		while (n != 0) {
+			// removing the last digit of the number n
+			n = n / 10;
+			// increasing count by 1
+			count = count + 1;
+		}
+		return count;
 	}
 
 }

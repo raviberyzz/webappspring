@@ -8,17 +8,17 @@ public class ServiceRequest {
 
 	private String dateOfBirth;
 
-	private String income;
+	private int income;
 
-	private String monthlyExpenses;
+	private int monthlyExpenses;
 
-	private String monthlySavings;
+	private int monthlySavings;
 
-	private String savings;
+	private int savings;
 
-	private String assets;
+	private int assets;
 
-	private String debts;
+	private int debts;
 
 	private String email;
 
@@ -48,51 +48,59 @@ public class ServiceRequest {
 		this.lastName = lastName;
 	}
 
-	public String getIncome() {
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public int getIncome() {
 		return income;
 	}
 
-	public void setIncome(String income) {
+	public void setIncome(int income) {
 		this.income = income;
 	}
 
-	public String getMonthlyExpenses() {
+	public int getMonthlyExpenses() {
 		return monthlyExpenses;
 	}
 
-	public void setMonthlyExpenses(String monthlyExpenses) {
+	public void setMonthlyExpenses(int monthlyExpenses) {
 		this.monthlyExpenses = monthlyExpenses;
 	}
 
-	public String getMonthlySavings() {
+	public int getMonthlySavings() {
 		return monthlySavings;
 	}
 
-	public void setMonthlySavings(String monthlySavings) {
+	public void setMonthlySavings(int monthlySavings) {
 		this.monthlySavings = monthlySavings;
 	}
 
-	public String getSavings() {
+	public int getSavings() {
 		return savings;
 	}
 
-	public void setSavings(String savings) {
+	public void setSavings(int savings) {
 		this.savings = savings;
 	}
 
-	public String getAssets() {
+	public int getAssets() {
 		return assets;
 	}
 
-	public void setAssets(String assets) {
+	public void setAssets(int assets) {
 		this.assets = assets;
 	}
 
-	public String getDebts() {
+	public int getDebts() {
 		return debts;
 	}
 
-	public void setDebts(String debts) {
+	public void setDebts(int debts) {
 		this.debts = debts;
 	}
 
@@ -136,14 +144,6 @@ public class ServiceRequest {
 		this.id = id;
 	}
 
-	public String getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
 	public String getPostalCode() {
 		return postalCode;
 	}
@@ -151,5 +151,7 @@ public class ServiceRequest {
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
 	}
+
+
 
 }

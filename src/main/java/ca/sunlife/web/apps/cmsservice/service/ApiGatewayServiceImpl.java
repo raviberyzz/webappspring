@@ -1,6 +1,7 @@
 package ca.sunlife.web.apps.cmsservice.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
+import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
 import ca.sunlife.web.apps.cmsservice.restclient.SalesforceClient;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
@@ -35,31 +37,34 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
     
     @Autowired
     SalesforceClient salesforceClient;
+    
+    @Autowired
+    KafkaClient kafkaClient;
 	
     private static final Logger logger = LogManager.getLogger(ApiGatewayServiceImpl.class);
 
     @Override
     public CmsResponse sendData(ServiceRequest data) throws JsonProcessingException {
         CmsResponse cmsResponse = null;
-        boolean isValidToken = authenticateToken();
-        if (isValidToken) {
-            data.setId(generateUid(data));
-
+        //boolean isValidToken = authenticateToken();
+        String token = oktaTokenGenerator.generateToken();
+        if (token != null) {
             HttpHeaders header = new HttpHeaders();
-            header.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("data", data);
+            header.add("Authorization", "Bearer "+token);
+            header.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            header.add("x-auth-token", "1");
+            header.add("x-traceability-id", "2");
+            header.add("x-correlation-id", "3");
             HttpEntity<String> request = new HttpEntity<>(ServiceUtil.getSalesForceJsonString(data), header);
-            cmsResponse = salesforceClient.postData(request);        
+            cmsResponse = kafkaClient.postData(request);        
         }
         
-        if(cmsResponse != null && cmsResponse.getStatusCode() == HttpStatus.OK.value()) {
+        if(cmsResponse != null) {
             cmsResponse.setMessage("data successfully submitted");
             logger.info(cmsResponse.getMessage());
         }else {
             cmsResponse = new CmsResponse();
-            cmsResponse.setMessage(isValidToken ? "Something went wrong!" : "Something went wrong!  URL not valid");
+            cmsResponse.setMessage(token != null ? "Something went wrong!" : "Something went wrong!  URL not valid");
             cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
             sendEmail(data);
@@ -83,15 +88,6 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         }
         return cmsResponse != null && cmsResponse.getStatusCode() == 200;
     }
-
-	private String generateUid(ServiceRequest data) {
-		Date date = new Date();
-		SimpleDateFormat ft = new SimpleDateFormat("ddMMyyhhmmssMs");
-		String randomId = data.getLeadSource() + ft.format(date);
-		logger.info("Uid:{}", randomId);
-		return randomId;
-
-	}
 
 	private void sendEmail(ServiceRequest data) {
         try {

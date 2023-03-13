@@ -42,7 +42,7 @@ public class OktaTokenGenerator {
 		try {
 			String clientToken = "Basic "
 					+ Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
-
+            logger.info("client token ::{}", clientToken);
 			HttpHeaders header = new HttpHeaders();
 			header.add("Authorization", clientToken);
 			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -53,7 +53,7 @@ public class OktaTokenGenerator {
 					ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpoint, requestHttp,
 					OktaResponse.class);
 			oktaResponse = response !=null ? response.getBody() : null;
-
+            logger.info("okta response ::{}",oktaResponse);
 		} catch (RestClientException ex) {
 			ex.printStackTrace();
 		}

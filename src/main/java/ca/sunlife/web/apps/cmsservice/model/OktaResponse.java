@@ -5,46 +5,45 @@ public class OktaResponse {
     /**
      * Token type. Example Bearer.
      */
-    private String tokenType;
+    private String token_type;
 
     /**
      * Expiry of the token in seconds. Example 3600.
      */
-    private String expiresIn;
+    private String expires_in;
 
     /**
      * The Generated Bearer token.
      */
-    private String accessToken;
+    private String access_token;
 
     /**
      * Scope of the token to be used. Refers to .read file.
      */
     private String scope;
 
-
-	public String getTokenType() {
-		return tokenType;
+	public String getToken_type() {
+		return token_type;
 	}
 
-	public void setTokenType(String tokenType) {
-		this.tokenType = tokenType;
+	public void setToken_type(String token_type) {
+		this.token_type = token_type;
 	}
 
-	public String getExpiresIn() {
-		return expiresIn;
+	public String getExpires_in() {
+		return expires_in;
 	}
 
-	public void setExpiresIn(String expiresIn) {
-		this.expiresIn = expiresIn;
+	public void setExpires_in(String expires_in) {
+		this.expires_in = expires_in;
 	}
 
-	public String getAccessToken() {
-		return accessToken;
+	public String getAccess_token() {
+		return access_token;
 	}
 
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
+	public void setAccess_token(String access_token) {
+		this.access_token = access_token;
 	}
 
 	public String getScope() {
@@ -54,4 +53,6 @@ public class OktaResponse {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+    
+    
 }

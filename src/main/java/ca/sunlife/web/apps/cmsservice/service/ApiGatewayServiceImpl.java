@@ -50,7 +50,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             header.add("x-auth-token", "1");
             header.add("x-traceability-id", "2");
             header.add("x-correlation-id", "3");
-            HttpEntity<String> request = new HttpEntity<>(ServiceUtil.getSalesForceJsonString(data), header);
+            HttpEntity<String> request = new HttpEntity<>(ServiceUtil.getLeadJsonString(data), header);
             cmsResponse = kafkaClient.postData(request);        
         }
         

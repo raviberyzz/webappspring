@@ -44,9 +44,9 @@ class OktaTokenGeneratorTest {
         ReflectionTestUtils.setField(oktaTokenGenerator, "scope", "scope");
         
         OktaResponse oktaResponse = new OktaResponse();
-        oktaResponse.setAccessToken("11111");
+        oktaResponse.setAccess_token("11111");
         oktaResponse.setScope("scope");
-        oktaResponse.setTokenType("credential");
+        oktaResponse.setToken_type("credential");
         
         when(restTemplate.postForEntity(Mockito.any(String.class), 
                 Mockito.any(HttpEntity.class),

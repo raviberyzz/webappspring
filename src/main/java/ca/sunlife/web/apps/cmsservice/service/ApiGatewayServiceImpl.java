@@ -43,6 +43,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         CmsResponse cmsResponse = null;
         //boolean isValidToken = authenticateToken();
         String token = oktaTokenGenerator.generateToken();
+        logger.info("token::{}",token);
         if (token != null) {
             HttpHeaders header = new HttpHeaders();
             header.add("Authorization", "Bearer "+token);

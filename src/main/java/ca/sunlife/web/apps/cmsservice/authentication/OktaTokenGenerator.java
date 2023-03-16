@@ -58,7 +58,9 @@ public class OktaTokenGenerator {
 					ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpoint, requestHttp,
 					OktaResponse.class);
 			oktaResponse = response !=null ? response.getBody() : null;
-            logger.info("okta response ::{}",oktaResponse);
+            logger.info("request http ::{}",requestHttp);
+			logger.info("tokenEndpoint ::{}",tokenEndpoint);
+			logger.info("okta response ::{}",oktaResponse);
 		} catch (RestClientException ex) {
 			ex.printStackTrace();
 		}

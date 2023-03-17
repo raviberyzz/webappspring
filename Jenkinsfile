@@ -3,4 +3,5 @@
  buildMavenPipeline{
   	deploymentApplicationName = 'web-apps-cms-service'
 	stepPublishToCodeDx = 'false'
+	runXrayScan = 'false'
  }

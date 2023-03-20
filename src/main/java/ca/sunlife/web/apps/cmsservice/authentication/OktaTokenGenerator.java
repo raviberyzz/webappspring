@@ -55,11 +55,11 @@ public class OktaTokenGenerator {
 			body.add("grant_type", grantType);
 			body.add("scope", scope);
 			HttpEntity<MultiValueMap<String, String>> requestHttp = new HttpEntity<>(body, header);
-					ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpoint, requestHttp,
-					OktaResponse.class);
-			oktaResponse = response !=null ? response.getBody() : null;
             logger.info("request http ::{}",requestHttp);
 			logger.info("tokenEndpoint ::{}",tokenEndpoint);
+			ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpoint, requestHttp,
+			OktaResponse.class);
+			oktaResponse = response !=null ? response.getBody() : null;
 			logger.info("okta response ::{}",oktaResponse);
 		} catch (RestClientException ex) {
 			ex.printStackTrace();

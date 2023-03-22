@@ -135,7 +135,7 @@ public class ServiceUtil {
 		serviceRequest.setSavings(0);
 		serviceRequest.setAssets(0);
 		serviceRequest.setDebts(0);
-		serviceRequest.setLanguage("");
+		serviceRequest.setLanguage(getEmptyStringForNull(map.get("language")));
 		serviceRequest.setPostalCode("");
 		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
 				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
@@ -151,6 +151,7 @@ public class ServiceUtil {
 		ServiceUtil.validateField("firstName", paramMap.get("first_name"), true, ServiceConstants.NAME_REGEXP);
 		ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
 		ServiceUtil.validateField("email", paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
+		
 		return true;
 
 	}

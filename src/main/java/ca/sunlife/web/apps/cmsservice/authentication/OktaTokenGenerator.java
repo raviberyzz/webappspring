@@ -1,5 +1,6 @@
 package ca.sunlife.web.apps.cmsservice.authentication;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,7 +39,12 @@ public class OktaTokenGenerator {
 	@Value("${okta.oauth2.scope}")
 	private String scope;
 	
-	@Autowired
+	@Value("${okta.oauth2.conectionTimeout}")
+	private int oktaConnectionTimeout;
+	
+	@Value("${okta.oauth2.oktaReadTimeout}")
+	private int oktaReadTimeout;
+	
 	RestTemplate restTemplate;
 	
 	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
@@ -44,6 +52,10 @@ public class OktaTokenGenerator {
 	public String generateToken() {
 		OktaResponse oktaResponse = null;
 		try {
+			if(restTemplate == null){
+				restTemplate = initializeRestTemplate();
+				logger.info("getOktaAuthToken: Initiating rest template");
+			}
 			String clientToken = "Basic "
 					+ Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
             logger.info("client token ::{}", clientToken);
@@ -67,5 +79,19 @@ public class OktaTokenGenerator {
 		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
 
 	}
-
+	public RestTemplate initializeRestTemplate() {
+	try {
+		HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+		httpRequestFactory.setConnectTimeout(oktaConnectionTimeout);
+		httpRequestFactory.setReadTimeout(oktaReadTimeout);
+		httpRequestFactory.setConnectionRequestTimeout(oktaConnectionTimeout);
+		restTemplate = new RestTemplate(httpRequestFactory);
+		restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+		} catch (RestClientException ex) {
+			ex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return restTemplate;
+	}
 }

@@ -14,14 +14,19 @@ public class KafkaClient {
 
 	@Value("${kafka.producer.endpoint}")
     private String kafkaProducerEndpoint;
-	
+
     @Autowired
+    RestTemplateGenerator restTemplateGenerator;
+    
     RestTemplate restTemplate;
     
     public CmsResponse postData(HttpEntity<String> request) {
     	ResponseEntity<CmsResponse> response = null;
     	try {
-         response = restTemplate.postForEntity(kafkaProducerEndpoint, request, CmsResponse.class);
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+			}
+               response = restTemplate.postForEntity(kafkaProducerEndpoint, request, CmsResponse.class);
 		} catch (RestClientException ex) {
 			ex.printStackTrace();
 		}

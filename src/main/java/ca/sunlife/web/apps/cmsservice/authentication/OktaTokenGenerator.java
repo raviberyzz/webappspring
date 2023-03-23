@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import ca.sunlife.web.apps.cmsservice.model.OktaResponse;
+import ca.sunlife.web.apps.cmsservice.restclient.RestTemplateGenerator;
 
 @Service
 public class OktaTokenGenerator {
@@ -36,14 +37,20 @@ public class OktaTokenGenerator {
 	@Value("${okta.oauth2.scope}")
 	private String scope;
 	
-	@Autowired
-	RestTemplate restTemplate;
+    @Autowired
+    RestTemplateGenerator restTemplateGenerator;
+    
+    RestTemplate restTemplate;
 	
 	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
 
 	public String generateToken() {
 		OktaResponse oktaResponse = null;
 		try {
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+				logger.info("getOktaAuthToken: Initiating rest template");
+			}
 			String clientToken = "Basic "
 					+ Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
             logger.info("client token ::{}", clientToken);
@@ -67,5 +74,4 @@ public class OktaTokenGenerator {
 		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
 
 	}
-
 }

@@ -20,11 +20,11 @@ public class KafkaClient {
     
     public CmsResponse postData(HttpEntity<String> request) {
     	ResponseEntity<CmsResponse> response = null;
-    	try {
+    //	try {
          response = restTemplate.postForEntity(kafkaProducerEndpoint, request, CmsResponse.class);
-		} catch (RestClientException ex) {
-			ex.printStackTrace();
-		}
+	//	} catch (RestClientException ex) {
+	//		ex.printStackTrace();
+	//	}
         return response != null ? response.getBody() : null;            
     }
     

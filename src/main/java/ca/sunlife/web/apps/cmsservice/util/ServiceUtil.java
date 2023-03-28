@@ -64,16 +64,16 @@ public class ServiceUtil {
 		reqMap.put("LeadSource", serviceRequest.getLeadSource());
 		if (serviceRequest.getLanguage() != null && !serviceRequest.getLanguage().trim().isEmpty()) {
 			reqMap.put("Language", serviceRequest.getLanguage());
-			
+
 		}
 
 		if (serviceRequest.getPostalCode() != null && !serviceRequest.getPostalCode().trim().isEmpty()) {
 			reqMap.put("PostalCode", serviceRequest.getPostalCode());
 		}
-		
+
 		reqMap.put("LeadID", generateUid(serviceRequest));
 		return getJsonString(reqMap);
-		
+
 	}
 
 	public static String validateServiceRequest(ServiceRequest serviceRequest) {
@@ -145,11 +145,10 @@ public class ServiceUtil {
 		serviceRequest.setAssets(0);
 		serviceRequest.setDebts(0);
 		serviceRequest.setLanguage(map.get("language"));
-		
-	
+
 		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
 				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
-		
+
 		return serviceRequest;
 	}
 

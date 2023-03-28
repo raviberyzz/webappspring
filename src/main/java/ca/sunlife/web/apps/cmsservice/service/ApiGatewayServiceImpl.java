@@ -41,7 +41,6 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
     @Override
     public CmsResponse sendData(ServiceRequest data) throws JsonProcessingException {
         CmsResponse cmsResponse = null;
-        //boolean isValidToken = authenticateToken();
         String token = oktaTokenGenerator.generateToken();
         logger.info("token::{}",token);
         if (token != null) {

@@ -51,7 +51,9 @@ public class ServiceUtil {
 		Map<String, Object> reqMap = new HashMap<>();
 		reqMap.put("FirstName", serviceRequest.getFirstName());
 		reqMap.put("LastName", serviceRequest.getLastName());
-		reqMap.put("Birth_Date", serviceRequest.getDateOfBirth());
+		if (serviceRequest.getDateOfBirth() != null && !serviceRequest.getDateOfBirth().trim().isEmpty()) {
+			reqMap.put("Birth_Date", serviceRequest.getDateOfBirth());
+		}
 		reqMap.put("Income", serviceRequest.getIncome());
 		reqMap.put("Monthly_Expenses", serviceRequest.getMonthlyExpenses());
 		reqMap.put("Monthly_Savings", serviceRequest.getMonthlySavings());
@@ -60,10 +62,18 @@ public class ServiceUtil {
 		reqMap.put("Debts", serviceRequest.getDebts());
 		reqMap.put("Email", serviceRequest.getEmail());
 		reqMap.put("LeadSource", serviceRequest.getLeadSource());
-		reqMap.put("Language", serviceRequest.getLanguage());
-		reqMap.put("PostalCode", serviceRequest.getPostalCode());
+		if (serviceRequest.getLanguage() != null && !serviceRequest.getLanguage().trim().isEmpty()) {
+			reqMap.put("Language", serviceRequest.getLanguage());
+
+		}
+
+		if (serviceRequest.getPostalCode() != null && !serviceRequest.getPostalCode().trim().isEmpty()) {
+			reqMap.put("PostalCode", serviceRequest.getPostalCode());
+		}
+
 		reqMap.put("LeadID", generateUid(serviceRequest));
 		return getJsonString(reqMap);
+
 	}
 
 	public static String validateServiceRequest(ServiceRequest serviceRequest) {
@@ -128,15 +138,14 @@ public class ServiceUtil {
 		serviceRequest.setLastName(map.get("last_name"));
 		serviceRequest.setEmail(map.get("email"));
 		serviceRequest.setLeadSource(getEmptyStringForNull(map.get("lead_source")));
-		serviceRequest.setDateOfBirth("");
 		serviceRequest.setIncome(0);
 		serviceRequest.setMonthlyExpenses(0);
 		serviceRequest.setMonthlySavings(0);
 		serviceRequest.setSavings(0);
 		serviceRequest.setAssets(0);
 		serviceRequest.setDebts(0);
-		serviceRequest.setLanguage(getEmptyStringForNull(map.get("language")));
-		serviceRequest.setPostalCode("");
+		serviceRequest.setLanguage(map.get("language"));
+
 		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
 				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
 
@@ -151,7 +160,7 @@ public class ServiceUtil {
 		ServiceUtil.validateField("firstName", paramMap.get("first_name"), true, ServiceConstants.NAME_REGEXP);
 		ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
 		ServiceUtil.validateField("email", paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
-		
+
 		return true;
 
 	}
@@ -176,6 +185,7 @@ public class ServiceUtil {
 		return count;
 	}
 
-    private ServiceUtil() {}
+	private ServiceUtil() {
+	}
 
 }

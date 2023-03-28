@@ -24,5 +24,4 @@ public class KafkaClient {
        return response != null ? response.getBody() : null;            
     }
     
-   
 }

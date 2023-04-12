@@ -61,15 +61,16 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
                  cmsResponse.setMessage("data successfully submitted");
         	}else if(cmsResponse.getStatusCode() == 401) {
        		 cmsResponse.setStatusCode(401);
-             cmsResponse.setMessage("Unauthorized");
-        		
+             cmsResponse.setMessage("Unauthorized");        	
         	}else if(cmsResponse.getStatusCode() == 400) {
           		 cmsResponse.setStatusCode(400);
-                 cmsResponse.setMessage("Api responded with 400!");
-            		
+                 cmsResponse.setMessage("Api responded with 400!");            		
             }else if(cmsResponse.getStatusCode() == 500) {
           		 cmsResponse.setStatusCode(500);
-                 cmsResponse.setMessage("Api responded with 500!");	
+                 cmsResponse.setMessage("Api responded with 500!");	                 
+            }else if(cmsResponse.getStatusCode() == 503) {
+          		 cmsResponse.setStatusCode(503);
+                 cmsResponse.setMessage("Service Unavailable");	                 
             }else {
                  cmsResponse.setMessage("Something went wrong!");	
             }

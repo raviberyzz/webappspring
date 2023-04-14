@@ -34,11 +34,11 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-logging</artifactId>
 				</exclusion>
-				 <exclusion>
+				<exclusion>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-tomcat</artifactId>
 				</exclusion>
-			</exclusions>  
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -78,6 +78,11 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                </plugin>
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>2.5.3</version>
@@ -116,5 +121,9 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<scm>
+        <developerConnection>scm:git:ssh://git@bitbucket.sunlifecorp.com/web_apps/web-apps-cms-service.git</developerConnection>
+        <url>ssh://git@bitbucket.sunlifecorp.com/web_apps/web-apps-cms-service.git</url>
+        <tag>@{project.version}</tag>
+    </scm>
 </project>

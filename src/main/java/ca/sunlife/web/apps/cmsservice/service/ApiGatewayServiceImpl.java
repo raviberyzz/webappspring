@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,15 +52,31 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             header.add("x-traceability-id", "2");
             header.add("x-correlation-id", "3");
             HttpEntity<String> request = new HttpEntity<>(ServiceUtil.getLeadJsonString(data), header);
-            cmsResponse = kafkaClient.postData(request);        
+            cmsResponse = kafkaClient.postData(request);
         }
         
         if(cmsResponse != null) {
-            cmsResponse.setMessage("data successfully submitted");
-            logger.info(cmsResponse.getMessage());
+        	if(cmsResponse.getStatusCode() == 201) {
+        		 cmsResponse.setStatusCode(201);
+                 cmsResponse.setMessage("data successfully submitted");
+        	}else if(cmsResponse.getStatusCode() == 401) {
+       		 cmsResponse.setStatusCode(401);
+             cmsResponse.setMessage("Unauthorized");        	
+        	}else if(cmsResponse.getStatusCode() == 400) {
+          		 cmsResponse.setStatusCode(400);
+                 cmsResponse.setMessage("Api responded with 400!");            		
+            }else if(cmsResponse.getStatusCode() == 500) {
+          		 cmsResponse.setStatusCode(500);
+                 cmsResponse.setMessage("Api responded with 500!");	                 
+            }else if(cmsResponse.getStatusCode() == 503) {
+          		 cmsResponse.setStatusCode(503);
+                 cmsResponse.setMessage("Service Unavailable");	                 
+            }else {
+                 cmsResponse.setMessage("Something went wrong!");	
+            }
         }else {
             cmsResponse = new CmsResponse();
-            cmsResponse.setMessage(token != null ? "Something went wrong!" : "Something went wrong!  URL not valid");
+            cmsResponse.setMessage(token != null ? "Unable to connect host!" : "Something went wrong!  URL not valid");
             cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
             sendEmail(data);

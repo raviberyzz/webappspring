@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.sunlife.web.apps.cmsservice.exception.FieldNotFoundException;
+import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 
 public class ServiceUtil {
@@ -72,6 +73,20 @@ public class ServiceUtil {
 		}
 
 		reqMap.put("LeadID", generateUid(serviceRequest));
+		return getJsonString(reqMap);
+
+	}
+	
+	public static String getFaaLeadJsonString(FaaServiceRequest serviceRequest) throws JsonProcessingException {
+		Map<String, Object> reqMap = new HashMap<>();
+		reqMap.put("firstName", serviceRequest.getFirstName());
+		reqMap.put("lastName", serviceRequest.getLastName());
+		reqMap.put("preferredPhone", serviceRequest.getPreferredPhone());
+		reqMap.put("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode());
+		reqMap.put("email", serviceRequest.getEmail());
+		reqMap.put("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
+		reqMap.put("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
+
 		return getJsonString(reqMap);
 
 	}

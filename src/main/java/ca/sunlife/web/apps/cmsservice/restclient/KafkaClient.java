@@ -15,6 +15,9 @@ public class KafkaClient {
 
 	@Value("${kafka.producer.endpoint}")
     private String kafkaProducerEndpoint;
+    
+	@Value("${kafka.producer.endpoint.faa}")
+    private String kafkaProducerEndpointFaa;
 
     @Autowired
     RestTemplateGenerator restTemplateGenerator;
@@ -34,5 +37,16 @@ public class KafkaClient {
         return response != null ? response.getBody() : null;            
     }
     
-   
+    public CmsResponse postDataFaa(HttpEntity<String> request) {
+    	ResponseEntity<CmsResponse> response = null;
+    	try {
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+			}
+               response = restTemplate.postForEntity(kafkaProducerEndpointFaa, request, CmsResponse.class);
+		} catch (RestClientException ex) {
+			ex.printStackTrace();
+		}
+        return response != null ? response.getBody() : null;            
+    }
 }

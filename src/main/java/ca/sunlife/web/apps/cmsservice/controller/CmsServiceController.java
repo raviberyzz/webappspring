@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
+import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.service.ApiGatewayService;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
@@ -40,23 +41,25 @@ public class CmsServiceController {
 	private String retURL;
 
 	@PostMapping(value = "/submit")
-	public CmsResponse submit(@RequestBody ServiceRequest data) throws JsonProcessingException {
+	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
 		logger.info("in CmsServiceController");
 		CmsResponse cmsresponse = null;
 
-		String validResponse = ServiceUtil.validateServiceRequest(data);
-		setQuickstartFlag(data);
-		logger.info("Validresponse: {}", validResponse);
+//		String validResponse = ServiceUtil.validateServiceRequest(data);
+//		setQuickstartFlag(data);
+//		logger.info("Validresponse: {}", validResponse);
+		
+		cmsresponse = apiGatewayService.sendDataFaa(data);
 
-		if (validResponse.equals("Success")) {
-			cmsresponse = apiGatewayService.sendData(data);
-		} else {
-			cmsresponse = new CmsResponse();
-			cmsresponse.setMessage(validResponse);
-			cmsresponse.setStatusCode(500);
-			logger.error(validResponse);
-			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
-		}
+//		if (validResponse.equals("Success")) {
+//			cmsresponse = apiGatewayService.sendData(data);
+//		} else {
+//			cmsresponse = new CmsResponse();
+//			cmsresponse.setMessage(validResponse);
+//			cmsresponse.setStatusCode(500);
+//			logger.error(validResponse);
+//			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
+//		}
 		return cmsresponse;
 	}
 

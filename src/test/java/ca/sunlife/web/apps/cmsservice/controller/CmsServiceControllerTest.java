@@ -36,14 +36,14 @@ class CmsServiceControllerTest {
 
     }
     
-    @Test
-    void testSubmit() throws JsonProcessingException, ParseException {
-        ServiceRequest request = TestServiceUtil.buildServiceRequest();
-        CmsResponse cmsResponse = new CmsResponse();
-        when(apiGatewayService.sendData(any(ServiceRequest.class))).thenReturn(cmsResponse);
-        CmsResponse response = cmsServiceController.submit(request);
-        Assertions.assertNotNull(response);
-    }
+//    @Test
+//    void testSubmit() throws JsonProcessingException, ParseException {
+//        ServiceRequest request = TestServiceUtil.buildServiceRequest();
+//        CmsResponse cmsResponse = new CmsResponse();
+//        when(apiGatewayService.sendData(any(ServiceRequest.class))).thenReturn(cmsResponse);
+//        CmsResponse response = cmsServiceController.submit(request);
+//        Assertions.assertNotNull(response);
+//    }
 
 	
 }

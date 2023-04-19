@@ -37,14 +37,69 @@ public class OktaTokenGenerator {
 	@Value("${okta.oauth2.scope}")
 	private String scope;
 	
+	@Value("${okta.oauth2.endpoint.faa}")
+	private String tokenEndpointfaa;
+
+	@Value("${okta.oauth2.client.id.faa}")
+	private String clientIdfaa;
+
+	@Value("${okta.oauth2.client.secret.faa}")
+	private String clientSecretfaa;
+	
+	@Value("${okta.oauth2.scope.faa}")
+	private String scopefaa;
+	
     @Autowired
     RestTemplateGenerator restTemplateGenerator;
     
     RestTemplate restTemplate;
 	
 	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
+	
+	public String generateTokenFaa() {
+		logger.info("OktaTokenGenerator: Abdul logging starting");
+		logger.info("OktaTokenGenerator: Variables: tokenEndpointfaa {}", tokenEndpointfaa);
+		logger.info("OktaTokenGenerator: Variables: clientIdfaa {}", clientIdfaa);
+		logger.info("OktaTokenGenerator: Variables: clientSecretfaa {}", clientSecretfaa);
+		logger.info("OktaTokenGenerator: Variables: scopefaa {}", scopefaa);
+		
+		OktaResponse oktaResponse = null;
+		try {
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+				logger.info("getOktaAuthTokenfaa: Initiating rest template");
+			}
+			String clientToken = "Basic "
+					+ Base64.getEncoder().encodeToString((clientIdfaa + ":" + clientSecretfaa).getBytes());
+            logger.info("client token faa ::{}", clientToken);
+			HttpHeaders header = new HttpHeaders();
+			header.add("Authorization", clientToken);
+			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			header.add("Accept", "application/json");
+			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+			body.add("grant_type", grantType);
+			body.add("scope", scopefaa);
+			HttpEntity<MultiValueMap<String, String>> requestHttp = new HttpEntity<>(body, header);
+            logger.info("request http ::{}",requestHttp);
+			logger.info("tokenEndpoint ::{}",tokenEndpointfaa);
+			ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpointfaa, requestHttp,
+			OktaResponse.class);
+			oktaResponse = response != null ? response.getBody() : null;
+			logger.info("okta response faa ::{}",oktaResponse);
+		} catch (RestClientException ex) {
+			ex.printStackTrace();
+		}
+		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
+
+	}
 
 	public String generateToken() {
+		logger.info("OktaTokenGenerator: Prospr variables logs");
+		logger.info("OktaTokenGenerator: Variables: tokenEndpointProspr {}", tokenEndpoint);
+		logger.info("OktaTokenGenerator: Variables: clientIdProspr {}", clientId);
+		logger.info("OktaTokenGenerator: Variables: clientSecretProspr {}", clientSecret);
+		logger.info("OktaTokenGenerator: Variables: scopeProspr {}", scope);
+		
 		OktaResponse oktaResponse = null;
 		try {
 			if(restTemplate == null){

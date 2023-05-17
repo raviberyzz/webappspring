@@ -16,6 +16,8 @@ public class FaaServiceRequest {
 
 	private String leadReceivedDateTime;
 	
+	private String preferredLanguage;
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -70,5 +72,13 @@ public class FaaServiceRequest {
 
 	public void setLeadReceivedDateTime(String leadReceivedDateTime) {
 		this.leadReceivedDateTime = leadReceivedDateTime;
+	}
+	
+	public String getPreferredLanguage() {
+		return preferredLanguage;
+	}
+
+	public void setPreferredLanguage(String preferredLanguage) {
+		this.preferredLanguage = preferredLanguage;
 	}
 }

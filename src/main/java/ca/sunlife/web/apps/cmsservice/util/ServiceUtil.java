@@ -86,7 +86,7 @@ public class ServiceUtil {
 		reqMap.put("email", serviceRequest.getEmail());
 		reqMap.put("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
 		reqMap.put("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
-
+		reqMap.put("preferredLanguage", serviceRequest.getPreferredLanguage());
 		return getJsonString(reqMap);
 
 	}

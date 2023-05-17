@@ -87,6 +87,15 @@ public class ServiceUtil {
 		reqMap.put("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
 		reqMap.put("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
 		reqMap.put("preferredLanguage", serviceRequest.getPreferredLanguage());
+		reqMap.put("leadInstructions", serviceRequest.getLeadInstructions());
+		reqMap.put("homeAddressCity", serviceRequest.getHomeAddressCity());
+		reqMap.put("marketingTactic", serviceRequest.getMarketingTactic());
+		reqMap.put("primaryExtension", serviceRequest.getPrimaryExtension());
+		reqMap.put("webtrendsAnalyticsId", serviceRequest.getWebtrendsAnalyticsId());
+		reqMap.put("submissionId", serviceRequest.getSubmissionId());
+		reqMap.put("trafficSource", serviceRequest.getTrafficSource());
+		reqMap.put("webDomain", serviceRequest.getWebDomain());
+		reqMap.put("homeAddressProvince", serviceRequest.getHomeAddressProvince());
 		return getJsonString(reqMap);
 
 	}

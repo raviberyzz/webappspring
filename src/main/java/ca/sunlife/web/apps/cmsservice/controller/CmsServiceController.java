@@ -41,25 +41,35 @@ public class CmsServiceController {
 	private String retURL;
 
 	@PostMapping(value = "/submit")
-	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
+	public CmsResponse submit(@RequestBody ServiceRequest data) throws JsonProcessingException {
 		logger.info("in CmsServiceController");
 		CmsResponse cmsresponse = null;
 
-//		String validResponse = ServiceUtil.validateServiceRequest(data);
-//		setQuickstartFlag(data);
-//		logger.info("Validresponse: {}", validResponse);
+		String validResponse = ServiceUtil.validateServiceRequest(data);
+		setQuickstartFlag(data);
+		logger.info("Validresponse: {}", validResponse);
+		
+		cmsresponse = apiGatewayService.sendData(data);
+
+		if (validResponse.equals("Success")) {
+			cmsresponse = apiGatewayService.sendData(data);
+		} else {
+			cmsresponse = new CmsResponse();
+			cmsresponse.setMessage(validResponse);
+			cmsresponse.setStatusCode(500);
+			logger.error(validResponse);
+			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
+		}
+		return cmsresponse;
+	}
+	
+	@PostMapping(value = "/submitFaa")
+	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
+		logger.info("in CmsServiceController");
+		CmsResponse cmsresponse = null;
 		
 		cmsresponse = apiGatewayService.sendDataFaa(data);
 
-//		if (validResponse.equals("Success")) {
-//			cmsresponse = apiGatewayService.sendData(data);
-//		} else {
-//			cmsresponse = new CmsResponse();
-//			cmsresponse.setMessage(validResponse);
-//			cmsresponse.setStatusCode(500);
-//			logger.error(validResponse);
-//			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
-//		}
 		return cmsresponse;
 	}
 

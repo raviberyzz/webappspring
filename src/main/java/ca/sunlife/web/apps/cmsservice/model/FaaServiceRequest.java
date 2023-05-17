@@ -18,6 +18,24 @@ public class FaaServiceRequest {
 	
 	private String preferredLanguage;
 	
+	private String leadInstructions;
+
+	private String homeAddressCity;
+	
+	private String marketingTactic;
+	
+	private String primaryExtension;
+	
+	private String webtrendsAnalyticsId;
+	
+	private String submissionId;
+	
+	private String trafficSource;
+	
+	private String webDomain;
+	
+	private String homeAddressProvince;
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -80,5 +98,77 @@ public class FaaServiceRequest {
 
 	public void setPreferredLanguage(String preferredLanguage) {
 		this.preferredLanguage = preferredLanguage;
+	}
+	
+	public String getLeadInstructions() {
+		return leadInstructions;
+	}
+
+	public void setLeadInstructions(String leadInstructions) {
+		this.leadInstructions = leadInstructions;
+	}
+
+	public String getHomeAddressCity() {
+		return homeAddressCity;
+	}
+
+	public void setHomeAddressCity(String homeAddressCity) {
+		this.homeAddressCity = homeAddressCity;
+	}
+
+	public String getMarketingTactic() {
+		return marketingTactic;
+	}
+
+	public void setMarketingTactic(String marketingTactic) {
+		this.marketingTactic = marketingTactic;
+	}
+
+	public String getPrimaryExtension() {
+		return primaryExtension;
+	}
+
+	public void setPrimaryExtension(String primaryExtension) {
+		this.primaryExtension = primaryExtension;
+	}
+
+	public String getWebtrendsAnalyticsId() {
+		return webtrendsAnalyticsId;
+	}
+
+	public void setWebtrendsAnalyticsId(String webtrendsAnalyticsId) {
+		this.webtrendsAnalyticsId = webtrendsAnalyticsId;
+	}
+
+	public String getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(String submissionId) {
+		this.submissionId = submissionId;
+	}
+
+	public String getTrafficSource() {
+		return trafficSource;
+	}
+
+	public void setTrafficSource(String trafficSource) {
+		this.trafficSource = trafficSource;
+	}
+
+	public String getWebDomain() {
+		return webDomain;
+	}
+
+	public void setWebDomain(String webDomain) {
+		this.webDomain = webDomain;
+	}
+
+	public String getHomeAddressProvince() {
+		return homeAddressProvince;
+	}
+
+	public void setHomeAddressProvince(String homeAddressProvince) {
+		this.homeAddressProvince = homeAddressProvince;
 	}
 }

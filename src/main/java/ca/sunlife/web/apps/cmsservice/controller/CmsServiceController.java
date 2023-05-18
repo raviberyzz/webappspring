@@ -63,7 +63,7 @@ public class CmsServiceController {
 		return cmsresponse;
 	}
 	
-	@PostMapping(value = "/submitFaa")
+	@PostMapping(value = "/submit/faa")
 	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
 		logger.info("in CmsServiceController");
 		CmsResponse cmsresponse = null;

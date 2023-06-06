@@ -96,6 +96,8 @@ public class ServiceUtil {
 		reqMap.put("trafficSource", serviceRequest.getTrafficSource());
 		reqMap.put("webDomain", serviceRequest.getWebDomain());
 		reqMap.put("homeAddressProvince", serviceRequest.getHomeAddressProvince());
+		reqMap.put("requestedAdvisor", serviceRequest.getRequestedAdvisor());
+		reqMap.put("alternateLanguage", serviceRequest.getAlternateLanguage());
 		return getJsonString(reqMap);
 
 	}

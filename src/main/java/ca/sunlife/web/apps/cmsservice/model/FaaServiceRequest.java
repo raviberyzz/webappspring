@@ -21,7 +21,7 @@ public class FaaServiceRequest {
 	private String leadInstructions;
 
 	private String homeAddressCity;
-	
+
 	private String marketingTactic;
 	
 	private String primaryExtension;
@@ -35,6 +35,10 @@ public class FaaServiceRequest {
 	private String webDomain;
 	
 	private String homeAddressProvince;
+	
+	private String requestedAdvisor;
+	
+	private String alternateLanguage;
 	
 	public String getFirstName() {
 		return firstName;
@@ -170,5 +174,21 @@ public class FaaServiceRequest {
 
 	public void setHomeAddressProvince(String homeAddressProvince) {
 		this.homeAddressProvince = homeAddressProvince;
+	}
+	
+	public String getRequestedAdvisor() {
+		return requestedAdvisor;
+	}
+
+	public void setRequestedAdvisor(String requestedAdvisor) {
+		this.requestedAdvisor = requestedAdvisor;
+	}
+
+	public String getAlternateLanguage() {
+		return alternateLanguage;
+	}
+
+	public void setAlternateLanguage(String alternateLanguage) {
+		this.alternateLanguage = alternateLanguage;
 	}
 }

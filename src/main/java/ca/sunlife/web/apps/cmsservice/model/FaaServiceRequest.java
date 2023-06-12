@@ -39,6 +39,10 @@ public class FaaServiceRequest {
 	private String requestedAdvisor;
 	
 	private String alternateLanguage;
+
+	private String cifPartyId;
+	
+	private String bestTimetoCall;
 	
 	public String getFirstName() {
 		return firstName;
@@ -190,5 +194,21 @@ public class FaaServiceRequest {
 
 	public void setAlternateLanguage(String alternateLanguage) {
 		this.alternateLanguage = alternateLanguage;
+	}
+	
+	public String getCifPartyId() {
+		return cifPartyId;
+	}
+
+	public void setCifPartyId(String cifPartyId) {
+		this.cifPartyId = cifPartyId;
+	}
+
+	public String getBestTimetoCall() {
+		return bestTimetoCall;
+	}
+
+	public void setBestTimetoCall(String bestTimetoCall) {
+		this.bestTimetoCall = bestTimetoCall;
 	}
 }

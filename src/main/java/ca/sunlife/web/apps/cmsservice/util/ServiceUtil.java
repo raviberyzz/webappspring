@@ -99,7 +99,7 @@ public class ServiceUtil {
 		reqMap.put("requestedAdvisor", serviceRequest.getRequestedAdvisor());
 		reqMap.put("alternateLanguage", serviceRequest.getAlternateLanguage());
 		reqMap.put("cifPartyId", serviceRequest.getCifPartyId());
-		reqMap.put("bestTimetoCall", serviceRequest.getBestTimetoCall());
+		reqMap.put("bestTimeToCall", serviceRequest.getBestTimeToCall());
 		return getJsonString(reqMap);
 
 	}

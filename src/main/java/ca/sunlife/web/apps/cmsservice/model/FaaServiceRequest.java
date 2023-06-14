@@ -42,7 +42,7 @@ public class FaaServiceRequest {
 
 	private String cifPartyId;
 	
-	private String bestTimetoCall;
+	private String bestTimeToCall;
 	
 	public String getFirstName() {
 		return firstName;
@@ -204,11 +204,11 @@ public class FaaServiceRequest {
 		this.cifPartyId = cifPartyId;
 	}
 
-	public String getBestTimetoCall() {
-		return bestTimetoCall;
+	public String getBestTimeToCall() {
+		return bestTimeToCall;
 	}
 
-	public void setBestTimetoCall(String bestTimetoCall) {
-		this.bestTimetoCall = bestTimetoCall;
+	public void setBestTimeToCall(String bestTimeToCall) {
+		this.bestTimeToCall = bestTimeToCall;
 	}
 }

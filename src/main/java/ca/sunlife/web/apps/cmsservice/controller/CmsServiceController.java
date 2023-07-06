@@ -65,10 +65,23 @@ public class CmsServiceController {
 	
 	@PostMapping(value = "/submit/faa")
 	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
-		logger.info("in CmsServiceController");
+		logger.info("in CmsServiceController faa response");
 		CmsResponse cmsresponse = null;
+
+		String validResponse = ServiceUtil.validateFaaServiceRequest(data);
+		logger.info("Validresponse: {}", validResponse);
+		//add call to serviceUtil.validateFaaServiceReequest
+		//based on response proceed with apiGateWayCall
+		if (validResponse.equals("Success")) {
+			cmsresponse = apiGatewayService.sendDataFaa(data);
+		} else {
+			cmsresponse = new CmsResponse();
+			cmsresponse.setMessage(validResponse);
+			cmsresponse.setStatusCode(500);
+			logger.error(validResponse);
+			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
+		}
 		
-		cmsresponse = apiGatewayService.sendDataFaa(data);
 
 		return cmsresponse;
 	}

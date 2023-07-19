@@ -3,7 +3,6 @@
  buildMavenPipeline{
     deploymentApplicationName = 'web-apps-cms-service'
     stepPublishToCodeDx = 'false'
-    runXrayScan = 'false'
 	
     snapshotRepo = 'xfunc-generic-snapshot-local'
     stagingRepo = 'xfunc-generic-staging-local'

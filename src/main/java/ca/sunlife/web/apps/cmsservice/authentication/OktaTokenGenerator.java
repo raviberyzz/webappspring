@@ -57,11 +57,6 @@ public class OktaTokenGenerator {
 	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
 	
 	public String generateTokenFaa() {
-		logger.info("OktaTokenGenerator: Abdul logging starting");
-		logger.info("OktaTokenGenerator: Variables: tokenEndpointfaa {}", tokenEndpointfaa);
-		logger.info("OktaTokenGenerator: Variables: clientIdfaa {}", clientIdfaa);
-		logger.info("OktaTokenGenerator: Variables: clientSecretfaa {}", clientSecretfaa);
-		logger.info("OktaTokenGenerator: Variables: scopefaa {}", scopefaa);
 		
 		OktaResponse oktaResponse = null;
 		try {
@@ -94,11 +89,6 @@ public class OktaTokenGenerator {
 	}
 
 	public String generateToken() {
-		logger.info("OktaTokenGenerator: Prospr variables logs");
-		logger.info("OktaTokenGenerator: Variables: tokenEndpointProspr {}", tokenEndpoint);
-		logger.info("OktaTokenGenerator: Variables: clientIdProspr {}", clientId);
-		logger.info("OktaTokenGenerator: Variables: clientSecretProspr {}", clientSecret);
-		logger.info("OktaTokenGenerator: Variables: scopeProspr {}", scope);
 		
 		OktaResponse oktaResponse = null;
 		try {

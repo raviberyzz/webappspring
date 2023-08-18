@@ -68,7 +68,7 @@ public class OktaTokenGenerator {
 					+ Base64.getEncoder().encodeToString((clientIdfaa + ":" + clientSecretfaa).getBytes());
             logger.info("client authKey faa ::{}", clientAuthKey);
 			HttpHeaders header = new HttpHeaders();
-			header.add("Authorization", clientToken);
+			header.add("Authorization", clientAuthKey);
 			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			header.add("Accept", "application/json");
 			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -101,7 +101,7 @@ public class OktaTokenGenerator {
 					+ Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
             logger.info("client authKey ::{}", clientAuthKey);
 			HttpHeaders header = new HttpHeaders();
-			header.add("Authorization", clientToken);
+			header.add("Authorization", clientAuthKey);
 			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			header.add("Accept", "application/json");
 			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();

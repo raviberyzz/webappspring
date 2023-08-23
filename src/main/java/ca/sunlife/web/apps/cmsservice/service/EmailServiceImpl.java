@@ -231,6 +231,7 @@ public class EmailServiceImpl implements EmailService{
             internetAddress = new InternetAddress(emailConfig.getFromAddress());
         }
         
+        logger.info("fromAddress: " + emailConfig.getFromAddress());
         return internetAddress;
 
     }

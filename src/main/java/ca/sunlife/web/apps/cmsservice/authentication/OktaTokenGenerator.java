@@ -64,11 +64,11 @@ public class OktaTokenGenerator {
 				restTemplate = restTemplateGenerator.initializeRestTemplate();
 				logger.info("getOktaAuthTokenfaa: Initiating rest template");
 			}
-			String clientToken = "Basic "
+			String clientAuthKey = "Basic "
 					+ Base64.getEncoder().encodeToString((clientIdfaa + ":" + clientSecretfaa).getBytes());
-            logger.info("client token faa ::{}", clientToken);
+            logger.info("client authKey faa ::{}", clientAuthKey);
 			HttpHeaders header = new HttpHeaders();
-			header.add("Authorization", clientToken);
+			header.add("Authorization", clientAuthKey);
 			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			header.add("Accept", "application/json");
 			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -82,6 +82,7 @@ public class OktaTokenGenerator {
 			oktaResponse = response != null ? response.getBody() : null;
 			logger.info("okta response faa ::{}",oktaResponse);
 		} catch (RestClientException ex) {
+			logger.error("failed to get faa okta token");
 			ex.printStackTrace();
 		}
 		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
@@ -96,11 +97,11 @@ public class OktaTokenGenerator {
 				restTemplate = restTemplateGenerator.initializeRestTemplate();
 				logger.info("getOktaAuthToken: Initiating rest template");
 			}
-			String clientToken = "Basic "
+			String clientAuthKey = "Basic "
 					+ Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
-            logger.info("client token ::{}", clientToken);
+            logger.info("client authKey ::{}", clientAuthKey);
 			HttpHeaders header = new HttpHeaders();
-			header.add("Authorization", clientToken);
+			header.add("Authorization", clientAuthKey);
 			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			header.add("Accept", "application/json");
 			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -114,6 +115,7 @@ public class OktaTokenGenerator {
 			oktaResponse = response !=null ? response.getBody() : null;
 			logger.info("okta response ::{}",oktaResponse);
 		} catch (RestClientException ex) {
+			logger.error("failed to get okta token");
 			ex.printStackTrace();
 		}
 		return oktaResponse != null ? oktaResponse.getAccess_token() : null;

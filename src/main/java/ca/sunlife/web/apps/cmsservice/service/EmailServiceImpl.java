@@ -230,7 +230,9 @@ public class EmailServiceImpl implements EmailService{
         } else {
             internetAddress = new InternetAddress(emailConfig.getFromAddress());
         }
-        
+
+        logger.info("fromText: " + emailConfig.getFromText());
+        logger.info("fromAddress: " + emailConfig.getFromAddress());
         return internetAddress;
 
     }

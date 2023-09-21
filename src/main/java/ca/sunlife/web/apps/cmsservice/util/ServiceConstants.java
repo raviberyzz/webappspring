@@ -20,7 +20,7 @@ public class ServiceConstants {
     public static final String FAA_LEAD_SOURCE_REGEXP = "^[a-zA-ZàâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ][a-zA-ZàâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ\\.'’() -]{0,80}$";
     public static final String FAA_DATE_TIME_REGEXP = "^\\d\\d\\d\\d-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
     public static final String FAA_CITY_REGEXP = "^[a-zA-ZàâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ][a-zA-ZàâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ\\.'’() -]{0,40}$";
-    public static final String FAA_MARKETING_REGEXP = "^[a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ][a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ_ -]{0,80}$";
+    public static final String FAA_MARKETING_REGEXP = "^[a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ][a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ_ -:]{0,80}$";
     public static final String FAA_ANALYTICS_ID_REGEXP = "^[a-zA-Z0-9 -]{0,50}$";
     public static final String FAA_SUBMISSION_ID_REGEXP = "^[a-zA-Z0-9 -]{0,100}$";
     public static final String FAA_TRAFFIC_REGEXP = "^[a-zA-Z_ -]{0,255}$";

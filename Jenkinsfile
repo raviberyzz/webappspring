@@ -4,10 +4,10 @@
     deploymentApplicationName = 'web-apps-cms-service'
     stepPublishToCodeDx = 'false'
 	
-    snapshotRepo = 'xfunc-generic-snapshot-local'
-    stagingRepo = 'xfunc-generic-staging-local'
-    releaseRepo = 'xfunc-generic-release-local'
+    snapshotRepo = 'xfunc-mvn-snapshot-local'
+    stagingRepo = 'xfunc-mvn-staging-local'
+    releaseRepo = 'xfunc-mvn-release-local'
     runXrayScan = 'true'
     failBuildOnScaGateFailure = 'true'
-    xrayWatchName = 'xfunc-generic-repositories-watch'
+    xrayWatchName = 'xfunc-mvn-repositories-watch'
  }

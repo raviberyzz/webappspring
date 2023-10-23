@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ca.sunlife.web.apps.cmsservice.EmailConfig;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
+import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 
 @Service
 public class EmailServiceImpl implements EmailService{
@@ -51,6 +52,7 @@ public class EmailServiceImpl implements EmailService{
             return failure;
         }
     }
+    
     public boolean sendEMailWithStatusAndCC(ServiceRequest serviceRequest) throws MessagingException {
         boolean mailStatus = false;
         if (emailConfig.getFromAddress() != null && emailConfig.getToAddress() != null && serviceRequest != null) {
@@ -83,6 +85,7 @@ public class EmailServiceImpl implements EmailService{
             return false;
         }
     }
+    
     public Message buildEmailData(MimeMessage msg, ServiceRequest serviceRequest)
     throws MessagingException, IOException {
         String headerType = null;
@@ -140,6 +143,117 @@ public class EmailServiceImpl implements EmailService{
         
        return msg;
     }
+    
+    @Override
+    public String[] sendEmailFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+        String[] success = {
+                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}" };
+        String[] failure = {
+                "{ \"Status\" : \"Failure\", \"StatusCode\" : \"500\" ,\"StatusMsg\":\"Email not sent\"}" };
+        logger.info("Smtp Host for email service is {}", emailConfig.getEmailProperties().get("mail.smtp.host"));
+        if (sendEMailWithStatusAndCCFaa(serviceRequest)) {
+            return success;
+        } else {
+            return failure;
+        }
+    }
+    
+    public boolean sendEMailWithStatusAndCCFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+        boolean mailStatus = false;
+        if (emailConfig.getFromAddress() != null && emailConfig.getToAddressFaa() != null && serviceRequest != null) {
+            try {
+                 Session session =
+                 Session.getInstance(emailConfig.getEmailProperties(), null);
+
+                 Message msg = buildEmailDataFaa(new MimeMessage(session), serviceRequest);
+
+                transport.sendEmail(msg);
+
+                mailStatus = true;
+                logger.info("Email has been sent");
+            } catch (AddressException ae) {
+                mailStatus = false;
+                logger.error(ae);
+                ae.printStackTrace();
+            } catch (MessagingException me) {
+                mailStatus = false;
+                logger.error(me);
+                me.printStackTrace();
+            } catch (Exception e) {
+                mailStatus = false;
+                logger.error(e);
+                e.printStackTrace();
+            }
+            return mailStatus;
+        } else {
+            logger.error("From/To field or the email body is null");
+            return false;
+        }
+    }
+    
+    public Message buildEmailDataFaa(MimeMessage msg, FaaServiceRequest serviceRequest)
+    	    throws MessagingException, IOException {
+    	        String headerType = null;
+    	        
+    	        msg.setFrom(getFromEmailAddressFaa());
+
+    	        if (emailConfig.getToAddressFaa() instanceof String) {
+    	            
+    	            List<InternetAddress> addressTo = getEmailAddressList(emailConfig.getToAddressFaa());
+    	            if (!addressTo.isEmpty()) {
+    	            	logger.info("getToAddressFaa: " + addressTo.toString());
+    	                msg.setRecipients(Message.RecipientType.TO, addressTo.toArray(new InternetAddress[addressTo.size()]));
+    	            } else {
+    	                logger.error("Email To field is invalid ");
+    	            }
+
+    	        }
+    	        if (emailConfig.getCcAddressFaa() instanceof String) {
+    	            List<InternetAddress> addressCc = getEmailAddressList(emailConfig.getCcAddressFaa());
+    	            if (!addressCc.isEmpty()) {
+    	            	logger.info("getCCAddressFaa: " + addressCc.toString());
+    	                msg.setRecipients(Message.RecipientType.CC, addressCc.toArray(new InternetAddress[addressCc.size()]));
+    	            }
+
+    	        }
+    	        if (emailConfig.getBccAddressFaa() instanceof String) {
+    	            List<InternetAddress> addressBcc = getEmailAddressList(emailConfig.getBccAddressFaa());
+    	            if (!addressBcc.isEmpty()) {
+    	                msg.setRecipients(Message.RecipientType.BCC,
+    	                        addressBcc.toArray(new InternetAddress[addressBcc.size()]));
+    	            }
+    	        }
+    	        if (emailConfig.getSubjectFaa() instanceof String) {
+    	            // Below code is to prevent Cross site scripting
+    	            String sanitizedEmailSubject = preventXSS(emailConfig.getSubjectFaa());
+    	            logger.info("sanitizedEmailSubject: " + sanitizedEmailSubject);
+    	            msg.setSubject(sanitizedEmailSubject, utf8);
+    	        } else {
+    	            logger.info("Email subject is empty ");
+    	        }
+
+    	        headerType = getContentType();
+    	        msg.setHeader("Content-Type", headerType);
+    	        
+    	        MimeBodyPart mimeContent = new MimeBodyPart();
+    	        mimeContent.setContent(preventXSS(emailConfig.getBodyFaa()), headerType);
+	            logger.info("getBodyFaa: " + emailConfig.getBodyFaa());    	        
+    	        
+    	        Multipart multipart = new MimeMultipart();
+    	        multipart.addBodyPart(mimeContent);
+    	           
+    	        String emailBody = getAttachmentAsStringFaa(serviceRequest);
+    	        logger.info("emailBody: " + emailBody);
+    	        if (emailBody != null && !emailBody.isEmpty()) {
+    	            logger.debug("Decoding");
+    	            multipart.addBodyPart(createAttachment(preventXSS(emailBody)));
+    	        }
+    	        msg.setSentDate(new Date());
+    	        msg.setContent(multipart);
+    	        
+    	       return msg;
+    	    }
+    
     private static boolean isValidStringWithRegex(String param, String regex) {
         if (regex == null || regex.length() == 0) {
             return true;
@@ -177,6 +291,24 @@ public class EmailServiceImpl implements EmailService{
         }
         return strBuilder.toString();
     }
+    
+    private String getAttachmentAsStringFaa(FaaServiceRequest serviceRequest) {
+        ObjectMapper oMapper = new ObjectMapper();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = oMapper.convertValue(serviceRequest, Map.class);
+        StringBuilder strBuilder = new StringBuilder();
+        for (Map.Entry<String,Object> entry : map.entrySet()) {
+            strBuilder.append(entry.getKey());
+            strBuilder.append("=");
+            strBuilder.append(entry.getValue());
+            strBuilder.append(",\n");
+        }
+        int lIndex = strBuilder.lastIndexOf(",");
+        if (lIndex > -1) {
+            strBuilder.delete(lIndex, lIndex + 1);
+        }
+        return strBuilder.toString();
+    }
 	
     private MimeBodyPart createAttachment(String attachStr) throws IOException, MessagingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -193,7 +325,7 @@ public class EmailServiceImpl implements EmailService{
 
         // Attachment
         MimeBodyPart mimeAttachment = new MimeBodyPart(fileHeaders, base64ByteArray);
-        mimeAttachment.setFileName("prosprlead.txt");
+        mimeAttachment.setFileName("faalead.txt");
         return mimeAttachment;
     }
     
@@ -232,6 +364,21 @@ public class EmailServiceImpl implements EmailService{
         }
 
         logger.info("fromText: " + emailConfig.getFromText());
+        logger.info("fromAddress: " + emailConfig.getFromAddress());
+        return internetAddress;
+
+    }
+    
+    private InternetAddress getFromEmailAddressFaa() throws UnsupportedEncodingException, AddressException {
+        InternetAddress internetAddress=null;
+        if (emailConfig.getFromTextFaa() instanceof String) {
+            String sanitizedFromText = preventXSS(emailConfig.getFromTextFaa());
+            internetAddress = new InternetAddress(emailConfig.getFromAddress(), sanitizedFromText, utf8);
+        } else {
+            internetAddress = new InternetAddress(emailConfig.getFromAddress());
+        }
+
+        logger.info("fromTextFaa: " + emailConfig.getFromTextFaa());
         logger.info("fromAddress: " + emailConfig.getFromAddress());
         return internetAddress;
 

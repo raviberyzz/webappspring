@@ -20,6 +20,7 @@ import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
 import ca.sunlife.web.apps.cmsservice.restclient.SalesforceClient;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
+import ca.sunlife.web.apps.cmsservice.EmailConfig;
 
 
 @Service
@@ -28,7 +29,10 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
 
 	@Autowired
     OktaTokenGenerator oktaTokenGenerator;
-    
+	
+	@Autowired
+    EmailConfig emailConfig;
+	
     @Autowired
     EmailService emailService;
     
@@ -81,7 +85,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
             sendEmail(data);
-        }        
+        }
         return cmsResponse;
     }
     
@@ -109,6 +113,13 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             cmsResponse.setMessage(token != null ? "Something went wrong!" : "Something went wrong!  URL not valid");
             cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
+            try {
+            	emailConfig.setBodyFaa("The following FAA Lead was not submitted due to a connection error in Leads API");
+                emailService.sendEmailFaa(data);
+                logger.info("Email sent successfully");
+            }catch(MessagingException ex) {
+            	logger.error("Email failed: {}", ex.getMessage());
+            }        
         }        
         return cmsResponse;
     }
@@ -138,7 +149,4 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         	logger.error("Email failed: {}", ex.getMessage());
         }        
     }
-	
-
-
 }

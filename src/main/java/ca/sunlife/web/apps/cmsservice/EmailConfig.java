@@ -42,6 +42,20 @@ public class EmailConfig {
     @Value("${mail.slf.charset}")
     private String charSet;
     
+//  FAA Email values
+    @Value("${mail.slf.fromtext.faa}")
+    private String fromTextFaa;
+	@Value("${mail.slf.subject.faa}")
+    private String subjectFaa;
+    @Value("${mail.slf.body.faa}")
+    private String bodyFaa;
+    @Value("${mail.slf.toaddress.faa}")
+    private String toAddressFaa;
+    @Value("${mail.slf.ccaddress.faa}")
+    private String ccAddressFaa;
+    @Value("${mail.slf.bccaddress.faa}")
+    private String bccAddressFaa;
+    
     @Bean("emailProperties")
     public Properties getEmailProperties() {
         Properties props = new Properties();
@@ -129,6 +143,55 @@ public class EmailConfig {
     public void setCharSet(String charSet) {
         this.charSet = charSet;
     }
+    
+    public String getFromTextFaa() {
+		return fromTextFaa;
+	}
+
+	public void setFromTextFaa(String fromTextFaa) {
+		this.fromTextFaa = fromTextFaa;
+	}
+
+	public String getSubjectFaa() {
+		return subjectFaa;
+	}
+
+	public void setSubjectFaa(String subjectFaa) {
+		this.subjectFaa = subjectFaa;
+	}
+
+	public String getBodyFaa() {
+		return bodyFaa;
+	}
+
+	public void setBodyFaa(String bodyFaa) {
+		this.bodyFaa = bodyFaa;
+	}
+
+	public String getToAddressFaa() {
+		return toAddressFaa;
+	}
+
+	public void setToAddressFaa(String toAddressFaa) {
+		this.toAddressFaa = toAddressFaa;
+	}
+
+	public String getCcAddressFaa() {
+		return ccAddressFaa;
+	}
+
+	public void setCcAddressFaa(String ccAddressFaa) {
+		this.ccAddressFaa = ccAddressFaa;
+	}
+	
+	public String getBccAddressFaa() {
+		return bccAddressFaa;
+	}
+
+	public void setBccAddressFaa(String bccAddressFaa) {
+		this.bccAddressFaa = bccAddressFaa;
+	}
+
 
 
 }

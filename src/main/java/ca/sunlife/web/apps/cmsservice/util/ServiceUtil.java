@@ -99,33 +99,38 @@ public class ServiceUtil {
 		reqMap.put("requestedAdvisor", serviceRequest.getRequestedAdvisor());
 		reqMap.put("alternateLanguage", serviceRequest.getAlternateLanguage());
 		reqMap.put("cifPartyId", serviceRequest.getCifPartyId());
-		reqMap.put("bestTimeToCall", serviceRequest.getBestTimeToCall());
+		reqMap.put("bestTimetoCall", serviceRequest.getBestTimeToCall());
 		return getJsonString(reqMap);
 
 	}
 	
 	public static String validateFaaServiceRequest(FaaServiceRequest serviceRequest) {
 		logger.info("in ServiceUtil.validateFaaServiceRequst");
-		
-		validateFaaField("firstName", serviceRequest.getFirstName(), true, ServiceConstants.FAA_NAME_REGEXP);
-		validateFaaField("lastName", serviceRequest.getLastName(), true, ServiceConstants.FAA_NAME_REGEXP);
-		validateFaaField("email", serviceRequest.getEmail(), true, ServiceConstants.FAA_EMAIL_REGEXP);
-		validateFaaField("preferredPhone", serviceRequest.getPreferredPhone(), true, ServiceConstants.FAA_PHONE_REGEXP);
-		validateFaaField("primaryExtension", serviceRequest.getPrimaryExtension(), false, ServiceConstants.FAA_EXTENSION_REGEXP);
-		validateFaaField("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode(), true, ServiceConstants.FAA_POSTAL_REGEXP);
-		validateFaaField("preferredLanguage", serviceRequest.getPreferredLanguage(), true, ServiceConstants.LANGUAGE_REGEXP);
-		validateFaaField("alternateLanguage", serviceRequest.getAlternateLanguage(), false, ServiceConstants.FAA_ALT_LANG_REGEXP);
-		validateFaaField("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource(), true, ServiceConstants.FAA_LEAD_SOURCE_REGEXP);
-		validateFaaField("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime(), true, ServiceConstants.FAA_DATE_TIME_REGEXP);
-		validateFaaField("leadInstructions", serviceRequest.getLeadInstructions(), false, ServiceConstants.FAA_INSTRUCTIONS_REGEXP);
-		validateFaaField("homeAddressCity", serviceRequest.getHomeAddressCity(), false, ServiceConstants.FAA_CITY_REGEXP);
-		validateFaaField("marketingTactic", serviceRequest.getMarketingTactic(), false, ServiceConstants.FAA_MARKETING_REGEXP);
-		validateFaaField("webtrendsAnalyticsId", serviceRequest.getWebtrendsAnalyticsId(), false, ServiceConstants.FAA_ANALYTICS_ID_REGEXP);
-		validateFaaField("submissionId", serviceRequest.getSubmissionId(), false, ServiceConstants.FAA_SUBMISSION_ID_REGEXP);
-		validateFaaField("trafficSource", serviceRequest.getTrafficSource(), false, ServiceConstants.FAA_TRAFFIC_REGEXP);
-		validateFaaField("homeAddressProvince", serviceRequest.getHomeAddressProvince(), false, ServiceConstants.FAA_PROVINCE_REGEXP);
-		validateFaaField("cifPartyId", serviceRequest.getCifPartyId(), false, ServiceConstants.FAA_PARTY_ID_REGEXP);
+		try {
+			validateFaaField("firstName", serviceRequest.getFirstName(), true, ServiceConstants.FAA_NAME_REGEXP);
+			validateFaaField("lastName", serviceRequest.getLastName(), true, ServiceConstants.FAA_NAME_REGEXP);
+			validateFaaField("email", serviceRequest.getEmail(), true, ServiceConstants.FAA_EMAIL_REGEXP);
+			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone(), true, ServiceConstants.FAA_PHONE_REGEXP);
+			validateFaaField("primaryExtension", serviceRequest.getPrimaryExtension(), false, ServiceConstants.FAA_EXTENSION_REGEXP);
+			validateFaaField("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode(), true, ServiceConstants.FAA_POSTAL_REGEXP);
+			validateFaaField("preferredLanguage", serviceRequest.getPreferredLanguage(), true, ServiceConstants.LANGUAGE_REGEXP);
+			validateFaaField("alternateLanguage", serviceRequest.getAlternateLanguage(), false, ServiceConstants.FAA_ALT_LANG_REGEXP);
+			validateFaaField("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource(), true, ServiceConstants.FAA_LEAD_SOURCE_REGEXP);
+			validateFaaField("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime(), true, ServiceConstants.FAA_DATE_TIME_REGEXP);
+			validateFaaField("leadInstructions", serviceRequest.getLeadInstructions(), false, ServiceConstants.FAA_INSTRUCTIONS_REGEXP);
+			validateFaaField("homeAddressCity", serviceRequest.getHomeAddressCity(), false, ServiceConstants.FAA_CITY_REGEXP);
+			validateFaaField("marketingTactic", serviceRequest.getMarketingTactic(), false, ServiceConstants.FAA_MARKETING_REGEXP);
+			validateFaaField("webtrendsAnalyticsId", serviceRequest.getWebtrendsAnalyticsId(), false, ServiceConstants.FAA_ANALYTICS_ID_REGEXP);
+			validateFaaField("submissionId", serviceRequest.getSubmissionId(), false, ServiceConstants.FAA_SUBMISSION_ID_REGEXP);
+			validateFaaField("trafficSource", serviceRequest.getTrafficSource(), false, ServiceConstants.FAA_TRAFFIC_REGEXP);
+			validateFaaField("homeAddressProvince", serviceRequest.getHomeAddressProvince(), false, ServiceConstants.FAA_PROVINCE_REGEXP);
+			validateFaaField("cifPartyId", serviceRequest.getCifPartyId(), false, ServiceConstants.FAA_PARTY_ID_REGEXP);
 
+			}
+			catch(Exception e) {
+			  return "Error details: " + e.toString();
+			}
+		
 		return "Success";
 	}
 	
@@ -184,9 +189,9 @@ public class ServiceUtil {
 		
 		// if field is required then check whether it is invalid or null, if it is throw the error
 		if (isRequired && (fieldVal == null || !isValid)) {
-			throw new FieldNotFoundException(String.format("%S is required and not found / invalid : %S", fieldName, fieldVal));
+			throw new FieldNotFoundException(String.format("%S is required and not found / invalid. Value of field : %S", fieldName, fieldVal));
 		} else if (!isRequired && fieldVal != null && fieldVal != "" && !isValid) {
-			throw new FieldNotFoundException(String.format("%S is not required and is invalid : %S", fieldName, fieldVal));
+			throw new FieldNotFoundException(String.format("%S is not required and is invalid. Value of field : %S", fieldName, fieldVal));
 		}
 		
 		// if the field is not required then check if its invalid and not blank, if it is both of those then throw another error

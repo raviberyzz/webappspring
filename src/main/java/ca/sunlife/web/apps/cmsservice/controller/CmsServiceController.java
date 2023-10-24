@@ -2,6 +2,8 @@ package ca.sunlife.web.apps.cmsservice.controller;
 
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,9 @@ import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
 import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.service.ApiGatewayService;
+import ca.sunlife.web.apps.cmsservice.service.EmailService;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
+import ca.sunlife.web.apps.cmsservice.EmailConfig;
 
 /**
  * @author Uma Maheshwaran
@@ -36,6 +40,12 @@ public class CmsServiceController {
 
 	@Autowired
 	ApiGatewayService apiGatewayService;
+	
+	@Autowired
+    EmailConfig emailConfig;
+	
+	@Autowired
+    EmailService emailService;
 
 	@Value("redirect.url")
 	private String retURL;
@@ -75,14 +85,19 @@ public class CmsServiceController {
 		if (validResponse.equals("Success")) {
 			cmsresponse = apiGatewayService.sendDataFaa(data);
 		} else {
+			emailConfig.setBodyFaa("The following FAA Lead was not submitted due to the parameters failing input validation. " + validResponse);
 			cmsresponse = new CmsResponse();
 			cmsresponse.setMessage(validResponse);
 			cmsresponse.setStatusCode(500);
+			try {
+                emailService.sendEmailFaa(data);
+                logger.info("Email sent successfully");
+            }catch(MessagingException ex) {
+            	logger.error("Email failed: {}", ex.getMessage());
+            }        
 			logger.error(validResponse);
 			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
 		}
-		
-
 		return cmsresponse;
 	}
 

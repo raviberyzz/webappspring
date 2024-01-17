@@ -30,7 +30,7 @@ public class KafkaClient {
     
     public CmsResponse postData(HttpEntity<String> request) {
     	ResponseEntity<CmsResponse> response = null;
-    	 CmsResponse cmsResponse = null;
+    	CmsResponse cmsResponse = null;
     	try {
 			if(restTemplate == null){
 				restTemplate = restTemplateGenerator.initializeRestTemplate();
@@ -47,14 +47,28 @@ public class KafkaClient {
     
     public CmsResponse postDataFaa(HttpEntity<String> request) {
     	ResponseEntity<CmsResponse> response = null;
+    	CmsResponse cmsResponse = null;
+    	String errorMessage = "";
     	try {
 			if(restTemplate == null){
 				restTemplate = restTemplateGenerator.initializeRestTemplate();
 			}
                response = restTemplate.postForEntity(kafkaProducerEndpointFaa, request, CmsResponse.class);
-		} catch (RestClientException ex) {
-			ex.printStackTrace();
+               logger.info("Response Body::{}",response.getBody());
+               cmsResponse = response.getBody();
+               cmsResponse.setStatusCode(response.getStatusCodeValue());
+    	} catch (RestClientException ex) {
+    		errorMessage = ex.getMessage();
+    		cmsResponse = new CmsResponse();
+            cmsResponse.setMessage(errorMessage);
+            if (errorMessage.contains("400")) {
+            	cmsResponse.setStatusCode(400);
+            } else if (errorMessage.contains("401")) {
+            	cmsResponse.setStatusCode(401);
+            } else {
+            	cmsResponse.setStatusCode(500);
+            }
 		}
-        return response != null ? response.getBody() : null;            
+    	return cmsResponse != null ? cmsResponse : null;           
     }
 }

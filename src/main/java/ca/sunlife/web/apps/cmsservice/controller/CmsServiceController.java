@@ -85,10 +85,10 @@ public class CmsServiceController {
 		if (validResponse.equals("Success")) {
 			cmsresponse = apiGatewayService.sendDataFaa(data);
 		} else {
-			emailConfig.setBodyFaa("The following FAA Lead was not submitted due to the parameters failing input validation. " + validResponse);
+			emailConfig.setBodyFaa("The following FAA Lead was not submitted due to missing required fields: " + validResponse);
 			cmsresponse = new CmsResponse();
 			cmsresponse.setMessage(validResponse);
-			cmsresponse.setStatusCode(500);
+			cmsresponse.setStatusCode(400);
 			try {
                 emailService.sendEmailFaa(data);
                 logger.info("Email sent successfully");

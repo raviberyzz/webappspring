@@ -235,18 +235,21 @@ public class EmailServiceImpl implements EmailService{
     	        headerType = getContentType();
     	        msg.setHeader("Content-Type", headerType);
     	        
+    	        String emailClientDetails = getAttachmentAsStringFaa(serviceRequest);
+    	        
+    	        String emailBody = emailConfig.getBodyFaa() + "<br/><br/>Lead details below:<br/><br/>" + emailClientDetails.replaceAll("\n","<br/>");
+    	        
     	        MimeBodyPart mimeContent = new MimeBodyPart();
-    	        mimeContent.setContent(preventXSS(emailConfig.getBodyFaa()), headerType);
+    	        mimeContent.setContent(preventXSS(emailBody), headerType);
 	            logger.info("getBodyFaa: " + emailConfig.getBodyFaa());    	        
     	        
     	        Multipart multipart = new MimeMultipart();
     	        multipart.addBodyPart(mimeContent);
     	           
-    	        String emailBody = getAttachmentAsStringFaa(serviceRequest);
     	        logger.info("emailBody: " + emailBody);
     	        if (emailBody != null && !emailBody.isEmpty()) {
     	            logger.debug("Decoding");
-    	            multipart.addBodyPart(createAttachment(preventXSS(emailBody)));
+    	            multipart.addBodyPart(createAttachment(preventXSS(emailClientDetails)));
     	        }
     	        msg.setSentDate(new Date());
     	        msg.setContent(multipart);

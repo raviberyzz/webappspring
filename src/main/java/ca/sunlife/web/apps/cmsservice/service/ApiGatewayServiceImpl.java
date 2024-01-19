@@ -106,22 +106,44 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         }
         
         if(cmsResponse != null) {
-            cmsResponse.setMessage("data successfully submitted");
-            logger.info(cmsResponse.getMessage());
+        	
+        	String currentMessage = cmsResponse.getMessage();
+        	if(cmsResponse.getStatusCode() == 200) {
+                 cmsResponse.setMessage("data successfully submitted");
+        	}else if(cmsResponse.getStatusCode() == 401) {
+	             cmsResponse.setMessage("Unauthorized Access to API, API Response: " + currentMessage);
+	             sendFaaEmail("The following FAA Lead was not submitted due to a status 401 authentication issue between the middleware and Leads API.<br/><br/>API Response: " + currentMessage, data);
+        	}else if(cmsResponse.getStatusCode() == 400) {
+                 cmsResponse.setMessage("Api responded with status 400! API rejected lead details due to failed validation, API Response: " + currentMessage);            		
+                 sendFaaEmail("The following FAA Lead was not submitted due to a status 400 rejection from Leads API, the lead failed API validation.<br/><br/>API Response: " + currentMessage, data);
+        	}else if(cmsResponse.getStatusCode() == 500) {
+                 cmsResponse.setMessage("Api responded with status 500! Api service unavailable, API response: " + currentMessage);	                 
+                 sendFaaEmail("The following FAA Lead was not submitted due to a status 500 response from the API, this means that Leads API is down.<br/><br/>API Response: " + currentMessage, data);
+            }else {
+            	cmsResponse.setMessage(token != null ? "Something went wrong after Okta Authentication!" : "Something went wrong with Okta Authentication!  URL not valid");
+            	cmsResponse.setStatusCode(500);
+            	sendFaaEmail(token != null ? "The following FAA Lead was not submitted due to a connection issue between the middleware and Leads API, Okta authentication was successful but connection from middleware to Leads API was not."
+        				: "The following FAA Lead was not submitted due to an Okta authentication issue in the middleware, no Okta token was generated.", data);
+            }
         }else {
-            cmsResponse = new CmsResponse();
-            cmsResponse.setMessage(token != null ? "Something went wrong!" : "Something went wrong!  URL not valid");
+        	cmsResponse = new CmsResponse();
+            cmsResponse.setMessage(token != null ? "Something went wrong after Okta Authentication!" : "Something went wrong with Okta Authentication!  URL not valid");
             cmsResponse.setStatusCode(500);
             logger.error(cmsResponse.getMessage());
-            try {
-            	emailConfig.setBodyFaa("The following FAA Lead was not submitted due to a connection error in Leads API");
-                emailService.sendEmailFaa(data);
-                logger.info("Email sent successfully");
-            }catch(MessagingException ex) {
-            	logger.error("Email failed: {}", ex.getMessage());
-            }        
-        }        
+            sendFaaEmail(token != null ? "The following FAA Lead was not submitted due to a connection issue between the middleware and Leads API, Okta authentication was successful but connection from middleware to Leads API was not."
+            				: "The following FAA Lead was not submitted due to an Okta authentication issue in the middleware, no Okta token was generated.", data);
+        }
         return cmsResponse;
+    }
+    
+    private void sendFaaEmail(String body, FaaServiceRequest data) {
+    	try {
+        	emailConfig.setBodyFaa(body);
+            emailService.sendEmailFaa(data);
+            logger.info("Email sent successfully");
+        }catch(MessagingException ex) {
+        	logger.error("Email failed: {}", ex.getMessage());
+        }        
     }
    
     private boolean authenticateToken() {

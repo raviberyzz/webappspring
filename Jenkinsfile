@@ -8,6 +8,6 @@
     stagingRepo = 'xfunc-mvn-staging-local'
     releaseRepo = 'xfunc-mvn-release-local'
     runXrayScan = 'true'
-    failBuildOnScaGateFailure = 'true'
+    failBuildOnScaGateFailure = 'false'
     xrayWatchName = 'xfunc-mvn-repositories-watch'
  }

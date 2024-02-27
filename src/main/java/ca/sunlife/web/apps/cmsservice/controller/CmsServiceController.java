@@ -58,8 +58,6 @@ public class CmsServiceController {
 		String validResponse = ServiceUtil.validateServiceRequest(data);
 		setQuickstartFlag(data);
 		logger.info("Validresponse: {}", validResponse);
-		
-		cmsresponse = apiGatewayService.sendData(data);
 
 		if (validResponse.equals("Success")) {
 			cmsresponse = apiGatewayService.sendData(data);

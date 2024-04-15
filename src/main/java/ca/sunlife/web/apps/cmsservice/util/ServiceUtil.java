@@ -109,14 +109,19 @@ public class ServiceUtil {
 		try {
 			validateFaaField("firstName", serviceRequest.getFirstName());
 			validateFaaField("lastName", serviceRequest.getLastName());
-			validateFaaField("email", serviceRequest.getEmail());
-			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone());
+//			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone());
 			validateFaaField("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode());
 			validateFaaField("preferredLanguage", serviceRequest.getPreferredLanguage());
 			validateFaaField("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
 			validateFaaField("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
-
+			String phoneNumber = serviceRequest.getPreferredPhone();
+			String email = serviceRequest.getEmail();
+			if (phoneNumber == null || phoneNumber.equals("")) {
+				validateFaaField("email", email);
+			} else {
+				validateFaaField("preferredPhone", phoneNumber);
 			}
+		}
 			catch(Exception e) {
 			  return "Error details: " + e.toString();
 			}

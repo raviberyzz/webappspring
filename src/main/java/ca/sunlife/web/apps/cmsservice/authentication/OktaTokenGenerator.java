@@ -49,6 +49,15 @@ public class OktaTokenGenerator {
 	@Value("${okta.oauth2.scope.faa}")
 	private String scopefaa;
 	
+	@Value("${okta.oauth2.endpoint.communication}")
+	private String tokenEndpointCommunication;
+
+	@Value("${okta.oauth2.client.id.communication}")
+	private String clientIdCommunication;
+
+	@Value("${okta.oauth2.client.secret.communication}")
+	private String clientSecretCommunication;
+	
     @Autowired
     RestTemplateGenerator restTemplateGenerator;
     
@@ -83,6 +92,38 @@ public class OktaTokenGenerator {
 			logger.info("okta response faa ::{}",oktaResponse);
 		} catch (RestClientException ex) {
 			logger.error("failed to get faa okta token");
+			ex.printStackTrace();
+		}
+		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
+
+	}
+	
+public String generateTokenCommunication() {
+		
+		OktaResponse oktaResponse = null;
+		try {
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+				logger.info("getOktaAuthTokencommunication: Initiating rest template");
+			}
+			String clientAuthKey = "Basic "
+					+ Base64.getEncoder().encodeToString((clientIdCommunication + ":" + clientSecretCommunication).getBytes());
+            logger.info("client authKey Communications API ::{}", clientAuthKey);
+			HttpHeaders header = new HttpHeaders();
+			header.add("Authorization", clientAuthKey);
+			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			header.add("Accept", "application/json");
+			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+			body.add("grant_type", grantType);
+			HttpEntity<MultiValueMap<String, String>> requestHttp = new HttpEntity<>(body, header);
+            logger.info("request http ::{}",requestHttp);
+			logger.info("tokenEndpoint ::{}",tokenEndpointCommunication);
+			ResponseEntity<OktaResponse> response = restTemplate.postForEntity(tokenEndpointCommunication, requestHttp,
+			OktaResponse.class);
+			oktaResponse = response != null ? response.getBody() : null;
+			logger.info("okta response communications API ::{}",oktaResponse);
+		} catch (RestClientException ex) {
+			logger.error("failed to get communications API okta token");
 			ex.printStackTrace();
 		}
 		return oktaResponse != null ? oktaResponse.getAccess_token() : null;

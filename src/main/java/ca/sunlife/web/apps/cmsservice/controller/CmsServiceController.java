@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
 import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
+import ca.sunlife.web.apps.cmsservice.model.CommunicationServiceRequest;
 import ca.sunlife.web.apps.cmsservice.service.ApiGatewayService;
 import ca.sunlife.web.apps.cmsservice.service.EmailService;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
@@ -93,6 +94,25 @@ public class CmsServiceController {
             }catch(MessagingException ex) {
             	logger.error("Email failed: {}", ex.getMessage());
             }        
+			logger.error(validResponse);
+			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
+		}
+		return cmsresponse;
+	}
+	
+	@PostMapping(value = "/submit/communication")
+	public CmsResponse submit(@RequestBody CommunicationServiceRequest data) throws JsonProcessingException {
+		logger.info("in CmsServiceController faa response");
+		CmsResponse cmsresponse = null;
+
+		String validResponse = ServiceUtil.validateCommunicationServiceRequest(data);
+		logger.info("Validresponse: {}", validResponse);
+		if (validResponse.equals("Success")) {
+			cmsresponse = apiGatewayService.sendDataCommunication(data);
+		} else {
+			cmsresponse = new CmsResponse();
+			cmsresponse.setMessage(validResponse);
+			cmsresponse.setStatusCode(400);
 			logger.error(validResponse);
 			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
 		}

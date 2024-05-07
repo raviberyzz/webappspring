@@ -105,12 +105,12 @@ public class ServiceUtil {
 
 	}
 	
-	public static String getCommunicationJsonString(CommunicationServiceRequest serviceRequest) throws JsonProcessingException {
+	public static String getCommunicationJsonString(FaaServiceRequest serviceRequest) throws JsonProcessingException {
 		Map<String, Object> reqMap = new HashMap<>();
 		Map<String, Object> emailMap = new HashMap<>();
-		emailMap.put("emailAddress", serviceRequest.getEmailAddress());
+		emailMap.put("emailAddress", serviceRequest.getEmail());
 		emailMap.put("templateId", serviceRequest.getTemplateId());
-		emailMap.put("language", serviceRequest.getLanguage());
+		emailMap.put("language", serviceRequest.getPreferredLanguage() == "French" ? "F" : "E");
 		reqMap.put("Email", emailMap);
 		Map<String, Object> additionalAttributes = new HashMap<>();
 		additionalAttributes.put("firstName", serviceRequest.getFirstName());

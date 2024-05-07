@@ -138,7 +138,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
     }
     
     @Override
-    public CmsResponse sendDataCommunication(CommunicationServiceRequest data) throws JsonProcessingException {
+    public CmsResponse sendDataCommunication(FaaServiceRequest data) throws JsonProcessingException {
         CmsResponse cmsResponse = null;
         String token = oktaTokenGenerator.generateTokenCommunication();
         logger.info("token::{}",token);

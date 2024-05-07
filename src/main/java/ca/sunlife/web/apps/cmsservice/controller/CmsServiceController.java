@@ -76,13 +76,17 @@ public class CmsServiceController {
 	public CmsResponse submit(@RequestBody FaaServiceRequest data) throws JsonProcessingException {
 		logger.info("in CmsServiceController faa response");
 		CmsResponse cmsresponse = null;
-
+		CmsResponse cmsCommunicationsResponse = null;
 		String validResponse = ServiceUtil.validateFaaServiceRequest(data);
 		logger.info("Validresponse: {}", validResponse);
 		//add call to serviceUtil.validateFaaServiceReequest
 		//based on response proceed with apiGateWayCall
 		if (validResponse.equals("Success")) {
 			cmsresponse = apiGatewayService.sendDataFaa(data);
+			if (data.getTemplateId() != null) {
+				cmsCommunicationsResponse = apiGatewayService.sendDataCommunication(data);
+				cmsresponse.setMessage(cmsresponse.getMessage() + String.format(" Communications API Response code: %d and response message: %s", cmsCommunicationsResponse.getStatusCode(), cmsCommunicationsResponse.getMessage()));
+			}
 		} else {
 			emailConfig.setBodyFaa("The following FAA Lead was not submitted due to missing required fields: " + validResponse);
 			cmsresponse = new CmsResponse();
@@ -100,24 +104,24 @@ public class CmsServiceController {
 		return cmsresponse;
 	}
 	
-	@PostMapping(value = "/submit/communication")
-	public CmsResponse submit(@RequestBody CommunicationServiceRequest data) throws JsonProcessingException {
-		logger.info("in CmsServiceController faa response");
-		CmsResponse cmsresponse = null;
-
-		String validResponse = ServiceUtil.validateCommunicationServiceRequest(data);
-		logger.info("Validresponse: {}", validResponse);
-		if (validResponse.equals("Success")) {
-			cmsresponse = apiGatewayService.sendDataCommunication(data);
-		} else {
-			cmsresponse = new CmsResponse();
-			cmsresponse.setMessage(validResponse);
-			cmsresponse.setStatusCode(400);
-			logger.error(validResponse);
-			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
-		}
-		return cmsresponse;
-	}
+//	@PostMapping(value = "/submit/communication")
+//	public CmsResponse submit(@RequestBody CommunicationServiceRequest data) throws JsonProcessingException {
+//		logger.info("in CmsServiceController faa response");
+//		CmsResponse cmsresponse = null;
+//
+//		String validResponse = ServiceUtil.validateCommunicationServiceRequest(data);
+//		logger.info("Validresponse: {}", validResponse);
+//		if (validResponse.equals("Success")) {
+//			cmsresponse = apiGatewayService.sendDataCommunication(data);
+//		} else {
+//			cmsresponse = new CmsResponse();
+//			cmsresponse.setMessage(validResponse);
+//			cmsresponse.setStatusCode(400);
+//			logger.error(validResponse);
+//			logger.error("Invalid Request:{}", ServiceUtil.getJsonString(data));
+//		}
+//		return cmsresponse;
+//	}
 
 	@PostMapping(value = "form-submit", consumes = { MediaType.APPLICATION_FORM_URLENCODED_VALUE })
 	public CmsResponse formSubmit(@RequestParam Map<String, String> paramMap) throws JsonProcessingException {

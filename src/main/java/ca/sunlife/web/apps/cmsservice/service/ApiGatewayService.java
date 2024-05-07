@@ -14,6 +14,6 @@ public interface ApiGatewayService {
 	
 	CmsResponse sendDataFaa(FaaServiceRequest data) throws JsonProcessingException;
 
-	CmsResponse sendDataCommunication(CommunicationServiceRequest data) throws JsonProcessingException;
+	CmsResponse sendDataCommunication(FaaServiceRequest data) throws JsonProcessingException;
 
 }

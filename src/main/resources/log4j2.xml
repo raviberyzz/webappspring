@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="60">
 	<Properties>
-		<Property name="path">/logs/waslb/cmsapiservice</Property>
+		<Property name="path">/logs/waslb/${sys:websphere.Env}/${sys:websphere.Lob}/${sys:websphere.Instance}/${sys:websphere.Name}/cmsapiservice</Property>
 		<Property name="LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%t] [%c{1}] - %msg%n</Property>
 		<Property name="filePatternLayout">%d %-5p (%t) [%c{1}] %m%n</Property>
 	</Properties>

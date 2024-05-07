@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
+import ca.sunlife.web.apps.cmsservice.model.CommunicationServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
@@ -132,6 +133,45 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
             logger.error(cmsResponse.getMessage());
             sendFaaEmail(token != null ? "The following FAA Lead was not submitted due to a connection issue between the middleware and Leads API, Okta authentication was successful but connection from middleware to Leads API was not."
             				: "The following FAA Lead was not submitted due to an Okta authentication issue in the middleware, no Okta token was generated.", data);
+        }
+        return cmsResponse;
+    }
+    
+    @Override
+    public CmsResponse sendDataCommunication(FaaServiceRequest data) throws JsonProcessingException {
+        CmsResponse cmsResponse = null;
+        String token = oktaTokenGenerator.generateTokenCommunication();
+        logger.info("token::{}",token);
+        if (token != null) {
+            HttpHeaders header = new HttpHeaders();
+            header.add("Authorization", "Bearer "+token);
+            header.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            header.add("x-traceability-id", "2");
+//            header.add("x-correlation-id", "3");
+            HttpEntity<String> request = new HttpEntity<>(ServiceUtil.getCommunicationJsonString(data), header);
+            cmsResponse = kafkaClient.postDataCommunication(request);        
+        }
+        
+        if(cmsResponse != null) {
+        	
+        	String currentMessage = cmsResponse.getMessage();
+        	if(cmsResponse.getStatusCode() == 200) {
+                 cmsResponse.setMessage("data successfully submitted");
+        	}else if(cmsResponse.getStatusCode() == 401) {
+	             cmsResponse.setMessage("Unauthorized Access to API, API Response: " + currentMessage);
+        	}else if(cmsResponse.getStatusCode() == 400) {
+                 cmsResponse.setMessage("Api responded with status 400! API rejected lead details due to failed validation, API Response: " + currentMessage);
+        	}else if(cmsResponse.getStatusCode() == 500) {
+                 cmsResponse.setMessage("Api responded with status 500! Api service unavailable, API response: " + currentMessage);	                 
+            }else {
+            	cmsResponse.setMessage(token != null ? "Something went wrong after Okta Authentication!" : "Something went wrong with Okta Authentication!  URL not valid");
+            	cmsResponse.setStatusCode(500);
+            }
+        }else {
+        	cmsResponse = new CmsResponse();
+            cmsResponse.setMessage(token != null ? "Something went wrong after Okta Authentication!" : "Something went wrong with Okta Authentication!  URL not valid");
+            cmsResponse.setStatusCode(500);
+            logger.error(cmsResponse.getMessage());
         }
         return cmsResponse;
     }

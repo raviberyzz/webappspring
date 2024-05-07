@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.sunlife.web.apps.cmsservice.exception.FieldNotFoundException;
+import ca.sunlife.web.apps.cmsservice.model.CommunicationServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 
@@ -104,22 +105,72 @@ public class ServiceUtil {
 
 	}
 	
+	public static String getCommunicationJsonString(FaaServiceRequest serviceRequest) throws JsonProcessingException {
+		Map<String, Object> reqMap = new HashMap<>();
+		Map<String, Object> emailMap = new HashMap<>();
+		emailMap.put("emailAddress", serviceRequest.getEmail());
+		emailMap.put("templateId", serviceRequest.getTemplateId());
+		emailMap.put("language", serviceRequest.getPreferredLanguage() == "French" ? "F" : "E");
+		reqMap.put("Email", emailMap);
+		Map<String, Object> additionalAttributes = new HashMap<>();
+		additionalAttributes.put("firstName", serviceRequest.getFirstName());
+		additionalAttributes.put("coverageAmount", serviceRequest.getCoverageAmount());
+		additionalAttributes.put("costRange", serviceRequest.getCostRange());
+		additionalAttributes.put("incomeReplacement", serviceRequest.getIncomeReplacement());
+		additionalAttributes.put("debtPayment", serviceRequest.getDebtPayment());
+		additionalAttributes.put("additionalExpense", serviceRequest.getAdditionalExpense());
+		additionalAttributes.put("totalEstimate", serviceRequest.getTotalEstimate());
+		emailMap.put("additionalAttributes", additionalAttributes);
+		return getJsonString(reqMap);
+
+	}
+	
 	public static String validateFaaServiceRequest(FaaServiceRequest serviceRequest) {
 		logger.info("in ServiceUtil.validateFaaServiceRequst");
 		try {
 			validateFaaField("firstName", serviceRequest.getFirstName());
 			validateFaaField("lastName", serviceRequest.getLastName());
-			validateFaaField("email", serviceRequest.getEmail());
-			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone());
+//			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone());
 			validateFaaField("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode());
 			validateFaaField("preferredLanguage", serviceRequest.getPreferredLanguage());
 			validateFaaField("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
 			validateFaaField("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
-
+			String phoneNumber = serviceRequest.getPreferredPhone();
+			String email = serviceRequest.getEmail();
+			if (phoneNumber == null || phoneNumber.equals("")) {
+				validateFaaField("email", email);
+			} else {
+				validateFaaField("preferredPhone", phoneNumber);
 			}
+		}
 			catch(Exception e) {
 			  return "Error details: " + e.toString();
 			}
+		
+		return "Success";
+	}
+	
+	public static String validateCommunicationServiceRequest(CommunicationServiceRequest serviceRequest) {
+		logger.info("in ServiceUtil.validateFaaServiceRequst");
+//		try {
+//			validateCommunicationField("firstName", serviceRequest.getFirstName());
+//			validateFaaField("lastName", serviceRequest.getLastName());
+////			validateFaaField("preferredPhone", serviceRequest.getPreferredPhone());
+//			validateFaaField("homeAddressPostalCode", serviceRequest.getHomeAddressPostalCode());
+//			validateFaaField("preferredLanguage", serviceRequest.getPreferredLanguage());
+//			validateFaaField("headOfficeLeadSource", serviceRequest.getHeadOfficeLeadSource());
+//			validateFaaField("leadReceivedDateTime", serviceRequest.getLeadReceivedDateTime());
+//			String phoneNumber = serviceRequest.getPreferredPhone();
+//			String email = serviceRequest.getEmail();
+//			if (phoneNumber == null || phoneNumber.equals("")) {
+//				validateFaaField("email", email);
+//			} else {
+//				validateFaaField("preferredPhone", phoneNumber);
+//			}
+//		}
+//			catch(Exception e) {
+//			  return "Error details: " + e.toString();
+//			}
 		
 		return "Success";
 	}

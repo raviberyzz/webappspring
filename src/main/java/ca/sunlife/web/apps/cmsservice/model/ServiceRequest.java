@@ -1,157 +1,170 @@
 package ca.sunlife.web.apps.cmsservice.model;
 
-public class ServiceRequest {
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.*;
+import java.util.Iterator;
+import java.util.Map;
 
-	private String firstName;
+import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
+import ca.sunlife.web.apps.cmsservice.util.ServiceConstants;
+import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
+import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
+import ca.sunlife.web.apps.cmsservice.service.ApiGatewayService;
+import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
+import ca.sunlife.web.apps.cmsservice.EmailConfig;
+import ca.sunlife.web.apps.cmsservice.service.EmailService;
 
-	private String lastName;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-	private String dateOfBirth;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-	private int income;
+abstract public class ServiceRequest {
+	public static final Logger logger = LogManager.getLogger(ServiceRequest.class);
+	
+	protected String serviceName;
+	protected String serviceFileName;
+	protected Set<ServiceParam> serviceParams;
 
-	private int monthlyExpenses;
+	@Autowired
+    OktaTokenGenerator oktaTokenGenerator;
 
-	private int monthlySavings;
+	@Autowired
+	ApiGatewayService apiGatewayService;
 
-	private int savings;
+	@Autowired
+    EmailConfig emailConfig;
+	
+    @Autowired
+    EmailService emailService;
+	
+	public void ServiceRequest() {}
+		
+	public void init() {
+		try {
+			InputStream is = ServiceUtil.readServiceFile(this, this.getServiceFileName());
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode jsonMap = mapper.readTree(is);
+			this.serviceName = jsonMap.get("serviceName").textValue();
 
-	private int assets;
+			JsonNode params = jsonMap.get("params");
+			serviceParams = processParams(params);
 
-	private int debts;
-
-	private String email;
-
-	private String leadSource;
-
-	private boolean quickStart;
-
-	private String language;
-
-	private String id;
-
-	private String postalCode;
-
-	public String getFirstName() {
-		return firstName;
+			logger.info(jsonMap);
+		} catch (Exception e) {
+			logger.info(e);
+		}
+	}	
+	
+	private HashSet<ServiceParam> processParams(JsonNode definedParams) {
+		HashSet<ServiceParam> hs = new HashSet();
+		
+		for (JsonNode param : definedParams) {
+			ServiceParam sp = new ServiceParam();
+			
+			try {
+				sp.setParamName(param.get("paramIn").textValue());
+				sp.setParamRequired(param.get("paramRequired").booleanValue());
+				sp.setRegex(param.get("paramRegex").textValue());
+				sp.setOutputName(param.get("paramOut").textValue());
+				
+				hs.add(sp);
+				//System.out.print("paramIn: " + param.get("paramIn").textValue() + "; ");
+			} catch (Exception e) {
+				//logger.info(e + ":" + param);
+				System.out.println(e + ": " + e.getMessage());
+			}
+		}
+		System.out.println("defined params: " + hs.toArray());
+		return hs;
 	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	
+	public String getServiceFileName() {
+		return serviceFileName;
 	}
-
-	public String getLastName() {
-		return lastName;
+	
+	public void setServiceFileName(String filename) {
+		this.serviceFileName = filename ;
 	}
+	
+    public String getServiceName() {
+    	return serviceName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+    public void setServiceName(String serviceName) {
+    	this.serviceName = serviceName;
+    }
+    
+    public Set<ServiceParam> getServiceParams() {
+    	return serviceParams;
+    }
+
+	public void setServiceParams(Set<ServiceParam> serviceParams) {
+		this.serviceParams = serviceParams;
 	}
+    
+    public CmsResponse sendData(Map<String,Object> inputValues) {
+    	CmsResponse cmsResponse = null;
+    	
+    	return cmsResponse;
+    	
+    }
+   	
+    public Map<String,Object> serviceValidation(Map<String,Object> inputValues) {
+		Map<String,Object> validInput = new HashMap<String,Object>();
+		System.out.println("serviceName: " + serviceName);
+		System.out.println("input: " + inputValues);
+		System.out.println("serviceParams: " + getServiceParams());
 
-	public String getDateOfBirth() {
-		return dateOfBirth;
+		for (ServiceParam param : serviceParams) {
+			String paramKey = param.getParamName();
+			String inputValue = null;
+			
+			inputValue = (String)inputValues.get(paramKey);
+		
+			if (inputValue == null) {
+				// if required and null, reject submission 
+				if (param.getParamRequired()) {
+					validInput = null;
+					logger.info("missing required input param: {}", paramKey);
+					System.out.println("service: " + serviceName + "::required param is null: " + paramKey);
+					break;
+				}
+			} else {
+				if (param.getParamRegex().equals("")) {
+					logger.info("service: {}. Input validation bypassed for param: {} :: {}", serviceName, paramKey, inputValue);
+				} else {
+					if (ServiceUtil.passRegex(param.getParamRegex(), inputValue)) {
+						validInput.put(param.getOutputName(), inputValue);
+					} else {
+						validInput = null;
+						logger.info("Service: {}::param FAILED VALIDATION: {} :: {} --- exiting", serviceName, paramKey, inputValue);
+						System.out.println("Service: " + serviceName + " >> param FAILED VALIDATION: " + paramKey + "::" + inputValue + " --- exiting");
+						break;
+					}
+				}
+			}
+		}
+		System.out.println("Validated inputs: " + validInput);
+		return validInput;
+    }
+
+	protected String getToken(String tokenEndpoint, String scope, String clientId, String clientSecret) {
+		String token = oktaTokenGenerator.generateToken(tokenEndpoint, scope, clientId, clientSecret);
+
+		token = "dummyValue";
+		
+		if (token == null) {
+			logger.error("{} service failed to generate token", serviceName);
+		}
+
+		return token;
 	}
-
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
-	public int getIncome() {
-		return income;
-	}
-
-	public void setIncome(int income) {
-		this.income = income;
-	}
-
-	public int getMonthlyExpenses() {
-		return monthlyExpenses;
-	}
-
-	public void setMonthlyExpenses(int monthlyExpenses) {
-		this.monthlyExpenses = monthlyExpenses;
-	}
-
-	public int getMonthlySavings() {
-		return monthlySavings;
-	}
-
-	public void setMonthlySavings(int monthlySavings) {
-		this.monthlySavings = monthlySavings;
-	}
-
-	public int getSavings() {
-		return savings;
-	}
-
-	public void setSavings(int savings) {
-		this.savings = savings;
-	}
-
-	public int getAssets() {
-		return assets;
-	}
-
-	public void setAssets(int assets) {
-		this.assets = assets;
-	}
-
-	public int getDebts() {
-		return debts;
-	}
-
-	public void setDebts(int debts) {
-		this.debts = debts;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getLeadSource() {
-		return leadSource;
-	}
-
-	public void setLeadSource(String leadSource) {
-		this.leadSource = leadSource;
-	}
-
-	public boolean isQuickStart() {
-		return quickStart;
-	}
-
-	public void setQuickStart(boolean quickStart) {
-		this.quickStart = quickStart;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getPostalCode() {
-		return postalCode;
-	}
-
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
-
-
-
+    
 }

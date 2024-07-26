@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ca.sunlife.web.apps.cmsservice.EmailConfig;
-import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
-import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
+import ca.sunlife.web.apps.cmsservice.model.ServiceRequestProspr;
+import ca.sunlife.web.apps.cmsservice.model.ServiceRequestFaa;
 
 @Service
 public class EmailServiceImpl implements EmailService{
@@ -40,7 +40,25 @@ public class EmailServiceImpl implements EmailService{
     TransportDelegator transport;
     
     @Override
-    public String[] sendEmail(ServiceRequest serviceRequest) throws MessagingException {
+    public String[] sendEmail(String body, Map<String,Object> serviceRequest) throws MessagingException {
+    	emailConfig.setBody(body);
+    	
+        String[] success = {
+                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}" };
+        String[] failure = {
+                "{ \"Status\" : \"Failure\", \"StatusCode\" : \"500\" ,\"StatusMsg\":\"Email not sent\"}" };
+        logger.info("Smtp Host for email service is {}", emailConfig.getEmailProperties().get("mail.smtp.host"));
+        if (sendEMailWithStatusAndCC(serviceRequest)) {
+            return success;
+        } else {
+            return failure;
+        }
+    }
+
+    @Override
+    public String[] sendEmail(EmailConfig econfig, Map<String,Object> serviceRequest) throws MessagingException {
+    	emailConfig = econfig;
+    	
         String[] success = {
                 "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}" };
         String[] failure = {
@@ -53,7 +71,23 @@ public class EmailServiceImpl implements EmailService{
         }
     }
     
-    public boolean sendEMailWithStatusAndCC(ServiceRequest serviceRequest) throws MessagingException {
+    @Override
+    //public String[] sendEmail(ServiceRequest serviceRequest) throws MessagingException {
+    public String[] sendEmailProspr(Map<String,Object> serviceRequest) throws MessagingException {
+        String[] success = {
+                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}" };
+        String[] failure = {
+                "{ \"Status\" : \"Failure\", \"StatusCode\" : \"500\" ,\"StatusMsg\":\"Email not sent\"}" };
+        logger.info("Smtp Host for email service is {}", emailConfig.getEmailProperties().get("mail.smtp.host"));
+        if (sendEMailWithStatusAndCC(serviceRequest)) {
+            return success;
+        } else {
+            return failure;
+        }
+    }
+    
+    //public boolean sendEMailWithStatusAndCC(ServiceRequest serviceRequest) throws MessagingException {
+    public boolean sendEMailWithStatusAndCC(Map<String,Object> serviceRequest) throws MessagingException {
         boolean mailStatus = false;
         if (emailConfig.getFromAddress() != null && emailConfig.getToAddress() != null && serviceRequest != null) {
             try {
@@ -86,7 +120,8 @@ public class EmailServiceImpl implements EmailService{
         }
     }
     
-    public Message buildEmailData(MimeMessage msg, ServiceRequest serviceRequest)
+    //public Message buildEmailData(MimeMessage msg, ServiceRequest serviceRequest)
+    public Message buildEmailData(MimeMessage msg, Map<String,Object> serviceRequest)
     throws MessagingException, IOException {
         String headerType = null;
         
@@ -145,7 +180,8 @@ public class EmailServiceImpl implements EmailService{
     }
     
     @Override
-    public String[] sendEmailFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+    //public String[] sendEmailFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+    public String[] sendEmailFaa(Map<String,Object> serviceRequest) throws MessagingException {
         String[] success = {
                 "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}" };
         String[] failure = {
@@ -158,7 +194,8 @@ public class EmailServiceImpl implements EmailService{
         }
     }
     
-    public boolean sendEMailWithStatusAndCCFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+    //public boolean sendEMailWithStatusAndCCFaa(FaaServiceRequest serviceRequest) throws MessagingException {
+    public boolean sendEMailWithStatusAndCCFaa(Map<String,Object> serviceRequest) throws MessagingException {
         boolean mailStatus = false;
         if (emailConfig.getFromAddress() != null && emailConfig.getToAddressFaa() != null && serviceRequest != null) {
             try {
@@ -191,7 +228,8 @@ public class EmailServiceImpl implements EmailService{
         }
     }
     
-    public Message buildEmailDataFaa(MimeMessage msg, FaaServiceRequest serviceRequest)
+    //public Message buildEmailDataFaa(MimeMessage msg, FaaServiceRequest serviceRequest)
+    public Message buildEmailDataFaa(MimeMessage msg, Map<String,Object> serviceRequest)
     	    throws MessagingException, IOException {
     	        String headerType = null;
     	        
@@ -277,7 +315,22 @@ public class EmailServiceImpl implements EmailService{
         return content;
     }
 
-    private String getAttachmentAsString(ServiceRequest serviceRequest) {
+    public String getAttachmentAsString(Map<String,Object> serviceRequest) {
+        StringBuilder strBuilder = new StringBuilder();
+        for (Map.Entry<String,Object> entry : serviceRequest.entrySet()) {
+            strBuilder.append(entry.getKey());
+            strBuilder.append("=");
+            strBuilder.append(entry.getValue());
+            strBuilder.append(",\n");
+        }
+        int lIndex = strBuilder.lastIndexOf(",");
+        if (lIndex > -1) {
+            strBuilder.delete(lIndex, lIndex + 1);
+        }
+        return strBuilder.toString();
+    }
+    
+    public String getAttachmentAsString(ServiceRequestProspr serviceRequest) {
         ObjectMapper oMapper = new ObjectMapper();
         @SuppressWarnings("unchecked")
         Map<String, Object> map = oMapper.convertValue(serviceRequest, Map.class);
@@ -294,8 +347,23 @@ public class EmailServiceImpl implements EmailService{
         }
         return strBuilder.toString();
     }
+   
+    private String getAttachmentAsStringFaa(Map<String,Object> serviceRequest) {
+        StringBuilder strBuilder = new StringBuilder();
+        for (Map.Entry<String,Object> entry : serviceRequest.entrySet()) {
+            strBuilder.append(entry.getKey());
+            strBuilder.append("=");
+            strBuilder.append(entry.getValue());
+            strBuilder.append(",\n");
+        }
+        int lIndex = strBuilder.lastIndexOf(",");
+        if (lIndex > -1) {
+            strBuilder.delete(lIndex, lIndex + 1);
+        }
+        return strBuilder.toString();
+    }
     
-    private String getAttachmentAsStringFaa(FaaServiceRequest serviceRequest) {
+    private String getAttachmentAsStringFaa(ServiceRequestFaa serviceRequest) {
         ObjectMapper oMapper = new ObjectMapper();
         @SuppressWarnings("unchecked")
         Map<String, Object> map = oMapper.convertValue(serviceRequest, Map.class);

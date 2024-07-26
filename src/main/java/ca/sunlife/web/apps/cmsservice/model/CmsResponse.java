@@ -1,10 +1,5 @@
 package ca.sunlife.web.apps.cmsservice.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class CmsResponse {
 	
 	private int statusCode;
@@ -36,6 +31,4 @@ public class CmsResponse {
 	public void setData(Object data) {
 		this.data = data;
 	}
-
-
 }

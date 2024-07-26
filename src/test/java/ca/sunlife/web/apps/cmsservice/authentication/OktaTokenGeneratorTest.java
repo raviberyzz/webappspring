@@ -38,7 +38,7 @@ class OktaTokenGeneratorTest {
     }
     
     @Test
-    void testGenerateToken() throws RestClientException, URISyntaxException {
+    void testGenerateTokenProspr() throws RestClientException, URISyntaxException {
         ReflectionTestUtils.setField(oktaTokenGenerator, "tokenEndpoint", "url");
         ReflectionTestUtils.setField(oktaTokenGenerator, "grantType", "grant_type");
         ReflectionTestUtils.setField(oktaTokenGenerator, "scope", "scope");

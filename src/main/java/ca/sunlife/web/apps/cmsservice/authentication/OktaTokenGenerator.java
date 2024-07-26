@@ -65,6 +65,39 @@ public class OktaTokenGenerator {
 	
 	private static final Logger logger = LogManager.getLogger(OktaTokenGenerator.class);
 	
+	public String generateToken(String endpoint, String clientScope, String id, String secret) {
+		OktaResponse oktaResponse = null;
+		
+		try {
+			if(restTemplate == null){
+				restTemplate = restTemplateGenerator.initializeRestTemplate();
+				logger.info("getOktaAuthTokencommunication: Initiating rest template");
+			}
+			String clientAuthKey = "Basic " + Base64.getEncoder().encodeToString((id + ":" + secret).getBytes());
+            logger.info("client authKey Communications API ::{}", clientAuthKey);
+            
+			HttpHeaders header = new HttpHeaders();
+			header.add("Authorization", clientAuthKey);
+			header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+			header.add("Accept", "application/json");
+			
+			MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+			body.add("grant_type", grantType);
+			body.add("scope", clientScope);
+			HttpEntity<MultiValueMap<String, String>> requestHttp = new HttpEntity<>(body, header);
+            logger.info("request http ::{}",requestHttp);
+			logger.info("tokenEndpoint ::{}",tokenEndpointCommunication);
+			
+			ResponseEntity<OktaResponse> response = restTemplate.postForEntity(endpoint, requestHttp, OktaResponse.class);
+			oktaResponse = response != null ? response.getBody() : null;
+			logger.info("okta response communications API ::{}",oktaResponse);
+		} catch (RestClientException e) {
+			logger.error("Failed to get okta token.  Endpoint: " + endpoint + ":::ClientId: " + id);
+			e.printStackTrace();
+		}
+		return oktaResponse != null ? oktaResponse.getAccess_token() : null;
+	}
+	
 	public String generateTokenFaa() {
 		
 		OktaResponse oktaResponse = null;
@@ -130,7 +163,7 @@ public String generateTokenCommunication() {
 
 	}
 
-	public String generateToken() {
+	public String generateTokenProspr() {
 		
 		OktaResponse oktaResponse = null;
 		try {

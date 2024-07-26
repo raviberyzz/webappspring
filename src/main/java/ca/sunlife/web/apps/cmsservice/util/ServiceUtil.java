@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.io.InputStream;
+import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +14,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ca.sunlife.web.apps.cmsservice.exception.FieldNotFoundException;
-import ca.sunlife.web.apps.cmsservice.model.CommunicationServiceRequest;
-import ca.sunlife.web.apps.cmsservice.model.FaaServiceRequest;
+import ca.sunlife.web.apps.cmsservice.model.ServiceRequestCommunication;
+import ca.sunlife.web.apps.cmsservice.model.ServiceRequestFaa;
+import ca.sunlife.web.apps.cmsservice.model.ServiceRequestProspr;
 import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 
 public class ServiceUtil {
@@ -27,8 +30,8 @@ public class ServiceUtil {
 		logger.info("obj as str:{}", result);
 		return result;
 	}
-
-	public static String getSalesForceJsonString(ServiceRequest serviceRequest) throws JsonProcessingException {
+/*
+	public static String getSalesForceJsonString(ServiceRequestProspr serviceRequest) throws JsonProcessingException {
 		Map<String, Object> reqMap = new HashMap<>();
 		reqMap.put("FirstName", serviceRequest.getFirstName());
 		reqMap.put("LastName", serviceRequest.getLastName());
@@ -48,8 +51,9 @@ public class ServiceUtil {
 		reqMap.put("id", serviceRequest.getId());
 		return getJsonString(reqMap);
 	}
-
-	public static String getLeadJsonString(ServiceRequest serviceRequest) throws JsonProcessingException {
+*/
+/*
+	public static Map<String,Object> getLeadJsonMap(ServiceRequestProspr serviceRequest) throws JsonProcessingException {
 		Map<String, Object> reqMap = new HashMap<>();
 		reqMap.put("FirstName", serviceRequest.getFirstName());
 		reqMap.put("LastName", serviceRequest.getLastName());
@@ -74,11 +78,14 @@ public class ServiceUtil {
 		}
 
 		reqMap.put("LeadID", generateUid(serviceRequest));
-		return getJsonString(reqMap);
+		
+		return reqMap;
+		//return getJsonString(reqMap);
 
 	}
-	
-	public static String getFaaLeadJsonString(FaaServiceRequest serviceRequest) throws JsonProcessingException {
+*/
+/*	
+	public static Map<String,Object> getFaaLeadJsonMap(ServiceRequestFaa serviceRequest) throws JsonProcessingException {
 		Map<String, Object> reqMap = new HashMap<>();
 		reqMap.put("firstName", serviceRequest.getFirstName());
 		reqMap.put("lastName", serviceRequest.getLastName());
@@ -101,11 +108,14 @@ public class ServiceUtil {
 		reqMap.put("alternateLanguage", serviceRequest.getAlternateLanguage());
 		reqMap.put("cifPartyId", serviceRequest.getCifPartyId());
 		reqMap.put("bestTimeToCall", serviceRequest.getBestTimeToCall());
-		return getJsonString(reqMap);
+		
+		return reqMap;
+		//return getJsonString(reqMap);
 
 	}
-	
-	public static String getCommunicationJsonString(FaaServiceRequest serviceRequest) throws JsonProcessingException {
+*/
+/*
+	public static Map<String,Object> getCommunicationJsonMap(ServiceRequestFaa serviceRequest) throws JsonProcessingException {
 		Map<String, Object> reqMap = new HashMap<>();
 		Map<String, Object> emailMap = new HashMap<>();
 		emailMap.put("emailAddress", serviceRequest.getEmail());
@@ -121,11 +131,14 @@ public class ServiceUtil {
 		additionalAttributes.put("additionalExpense", serviceRequest.getAdditionalExpense());
 		additionalAttributes.put("totalEstimate", serviceRequest.getTotalEstimate());
 		emailMap.put("additionalAttributes", additionalAttributes);
-		return getJsonString(reqMap);
+		
+		return reqMap;
+		//return getJsonString(reqMap);
 
 	}
-	
-	public static String validateFaaServiceRequest(FaaServiceRequest serviceRequest) {
+*/
+/*
+	public static String validateFaaServiceRequest(ServiceRequestFaa serviceRequest) {
 		logger.info("in ServiceUtil.validateFaaServiceRequst");
 		try {
 			validateFaaField("firstName", serviceRequest.getFirstName());
@@ -149,8 +162,9 @@ public class ServiceUtil {
 		
 		return "Success";
 	}
-	
-	public static String validateCommunicationServiceRequest(CommunicationServiceRequest serviceRequest) {
+*/
+/*
+	public static String validateCommunicationServiceRequest(ServiceRequestCommunication serviceRequest) {
 		logger.info("in ServiceUtil.validateFaaServiceRequst");
 //		try {
 //			validateCommunicationField("firstName", serviceRequest.getFirstName());
@@ -174,10 +188,10 @@ public class ServiceUtil {
 		
 		return "Success";
 	}
-	
+*/
 	//Create validateFaaServiceRequest function and reuse the validate field function.
-
-	public static String validateServiceRequest(ServiceRequest serviceRequest) {
+/*
+	public static String validateServiceRequest(ServiceRequestProspr serviceRequest) {
 		logger.info("in ServiceUtil.validateServiceRequst");
 
 		validateField("firstName", serviceRequest.getFirstName(), true, ServiceConstants.NAME_REGEXP);
@@ -209,7 +223,7 @@ public class ServiceUtil {
 		return "Success";
 
 	}
-
+*/
 	public static boolean validateField(String fieldName, String fieldVal, boolean isRequired, String regExStr) {
 		boolean isValid = true;
 		if (fieldVal != null) {
@@ -242,40 +256,71 @@ public class ServiceUtil {
 		return isValid;
 	}
 
-	public static ServiceRequest getServiceRequest(Map<String, String> map) {
-		ServiceRequest serviceRequest = new ServiceRequest();
-		serviceRequest.setFirstName(map.get("first_name"));
-		serviceRequest.setLastName(map.get("last_name"));
-		serviceRequest.setEmail(map.get("email"));
-		serviceRequest.setLeadSource(getEmptyStringForNull(map.get("lead_source")));
+	public static Map<String,Object> prepSubmitProspr(Map<String,Object> data) {
+		data.put("FirstName", (String)data.get("first_name"));
+		data.put("LastName", (String)data.get("last_name"));
+		data.put("Email", (String)data.get("email"));
+		data.put("Language", data.get("language"));
+		data.put("LeadID", "");
+		
+		data.put("Income", 0);
+		data.put("Monthly_Expenses", 0);
+		data.put("Monthly_Savings", 0);
+		data.put("Savings", 0);
+		data.put("Assets", 0);
+		data.put("Debts", 0);
+		data.put("Monthly_Savings", 0);
+		
+		data.put("QuickStart", data.get("LeadSource") == null ? false : data.get("LeadSource").toString().indexOf("QuickStart") > -1);
+		data.put("LeadSource", getEmptyStringForNull((String)data.get("lead_source")));
+		
+		// need quickStart
+
+		return data;		
+	}
+/*
+	public static ServiceRequestProspr getServiceRequest(Map<String, Object> map) {
+		ServiceRequestProspr serviceRequest = new ServiceRequestProspr();
+		serviceRequest.setFirstName((String)map.get("first_name"));
+		serviceRequest.setLastName((String)map.get("last_name"));
+		serviceRequest.setEmail((String)map.get("email"));
+		serviceRequest.setLeadSource(getEmptyStringForNull((String)map.get("lead_source")));
 		serviceRequest.setIncome(0);
 		serviceRequest.setMonthlyExpenses(0);
 		serviceRequest.setMonthlySavings(0);
 		serviceRequest.setSavings(0);
 		serviceRequest.setAssets(0);
 		serviceRequest.setDebts(0);
-		serviceRequest.setLanguage(map.get("language"));
+		serviceRequest.setLanguage((String)map.get("language"));
 
 		serviceRequest.setQuickStart(serviceRequest.getLeadSource() == null ? Boolean.FALSE
 				: serviceRequest.getLeadSource().indexOf("QuickStart") > -1);
 
 		return serviceRequest;
 	}
-
+*/
 	public static String getEmptyStringForNull(String val) {
 		return val == null ? "" : val;
 	}
 
-	public static boolean validateFormField(Map<String, String> paramMap) {
-		ServiceUtil.validateField("firstName", paramMap.get("first_name"), true, ServiceConstants.NAME_REGEXP);
-		ServiceUtil.validateField("lastName", paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
-		ServiceUtil.validateField("email", paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
+	public static boolean validateFormField(Map<String, Object> paramMap) {
+		ServiceUtil.validateField("firstName", (String)paramMap.get("first_name"), true, ServiceConstants.NAME_REGEXP);
+		ServiceUtil.validateField("lastName", (String)paramMap.get("last_name"), true, ServiceConstants.NAME_REGEXP);
+		ServiceUtil.validateField("email", (String)paramMap.get("email"), true, ServiceConstants.EMAIL_REGEXP);
 
 		return true;
 
 	}
 
-	private static String generateUid(ServiceRequest data) {
+	public static String generateUniqueId() {
+		Date date = new Date();
+		SimpleDateFormat ft = new SimpleDateFormat("ddMMyyhhmmssMs");
+		String randomId = ft.format(date);
+		logger.info("UniqueId: {}", randomId);
+		return randomId;
+	}
+/*
+	private static String generateUid(ServiceRequestProspr data) {
 		Date date = new Date();
 		SimpleDateFormat ft = new SimpleDateFormat("ddMMyyhhmmssMs");
 		String randomId = data.getLeadSource() + ft.format(date);
@@ -283,7 +328,7 @@ public class ServiceUtil {
 		return randomId;
 
 	}
-
+*/
 	public static int countDigits(int n) {
 		int count = 0;
 		while (n != 0) {
@@ -294,8 +339,31 @@ public class ServiceUtil {
 		}
 		return count;
 	}
+	
+	public static InputStream readServiceFile(ServiceRequest sr, String filename) {
+		try {
+			ClassLoader classLoader = sr.getClass().getClassLoader();
+			InputStream inputStream = classLoader.getResourceAsStream("json/"+filename);
+			
+			if (inputStream != null) {
+				logger.info("got file");
+				return inputStream;
+				
+			} else {
+				logger.info("no file");
+			}
+		} catch (Exception e) {
+			logger.info("fail");
+		}
+		return null;
 
-	private ServiceUtil() {
+	}
+
+	public static boolean passRegex(String regexValue, String value) {
+		String regexKey = regexValue.toUpperCase();
+		String regex = ServiceConstants.REGEX_MAP.containsKey(regexKey) ? ServiceConstants.REGEX_MAP.get(regexKey) : regexValue;
+		
+		return Pattern.matches(regex, value);		
 	}
 
 }

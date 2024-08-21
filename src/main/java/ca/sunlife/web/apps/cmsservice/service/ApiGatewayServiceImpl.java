@@ -311,7 +311,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         */
         return cmsResponse;
     }
-    
+/*    
     //private void sendFaaEmail(String body, FaaServiceRequest data) {
     private void sendFaaEmail(String body, Map<String,Object> data) {
     	try {
@@ -322,6 +322,7 @@ public class ApiGatewayServiceImpl implements ApiGatewayService {
         	logger.error("Email failed: {}", ex.getMessage());
         }        
     }
+*/
    /*
     private boolean authenticateToken() {
         CmsResponse cmsResponse = null;

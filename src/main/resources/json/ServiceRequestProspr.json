@@ -1,7 +1,57 @@
 {
     "serviceName":"ServiceRequestProspr",
-    "serviceURI":"someURI",
-    "authKey":"key",
+    "dev": {
+        "serviceURI":"https://lightgateway-uat.sunlifecorp.com:8443/gateway/leads-intake/0.1.0/leads",
+        "okta.oauth2.endpoint":"https://uat-okta-oauth.sunlife.com/oauth2/aus6yxydqnPqrgg1q1d7/v1/token",
+        "okta.oauth2.client.id":"0oa6yxw7bvAz0o3Wa1d7",
+        "okta.oauth2.client.secret":"e7AwgT-c6-_FdGEbCVqCFPkCwgMXRhj7ifhKpt6q",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"leads-producer.leads.uad",
+        "mail.slf.fromtext":"Prospr Service Layer - Dev",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"CalvinB.Lee@sunlife.com",
+        "mail.slf.subject":"Platform notification - DEV: AEM to Salesforce service layer failure",
+        "mail.slf.body":""
+    },
+    "sit": {
+        "serviceURI":"https://lightgateway-aizuat.sunlifecorp.com:8443/aizgateway/Leads-Intake-Producer/1.0/leads",
+        "okta.oauth2.endpoint":"https://uat-okta-oauth.sunlife.com/oauth2/aus6yxydqnPqrgg1q1d7/v1/token",
+        "okta.oauth2.client.id":"0oa6yxw7bvAz0o3Wa1d7",
+        "okta.oauth2.client.secret":"e7AwgT-c6-_FdGEbCVqCFPkCwgMXRhj7ifhKpt6q",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"leads-producer.leads.uad",
+        "mail.slf.fromtext":"Prospr Service Layer (SIT)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"Platform notification (SIT): AEM to Salesforce service layer failure",
+        "mail.slf.body":""
+    },
+    "stage": {
+        "serviceURI":"https://lightgateway-aizstg.sunlifecorp.com:443/aizgateway/Leads-Intake-Producer/1.0/leads/",
+        "okta.oauth2.endpoint":"https://stg-okta-oauth.sunlife.com/oauth2/aus7no4uj0thWGjIn1d7/v1/token",
+        "okta.oauth2.client.id":"0oa7v7cwxrlBCq5Cn1d7",
+        "okta.oauth2.client.secret":"wSjEjJSNvYvF-EaeBFkQKEyBJIw6WA2WxF0qpNWi",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"leads-producer.leads.uad",
+        "mail.slf.fromtext":"Prospr Service Layer (STAGE)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"Platform notification (STAGE): AEM to Salesforce service layer failure",
+        "mail.slf.body":"GE: FAA Service Layer: Rejected Lead"
+    },
+    "prod": {
+        "serviceURI":"https://services.sunlife.com/api/gateway/leads-intake/0.1.0/leads",
+        "okta.oauth2.endpoint":"https://okta-oauth.sunlife.com/oauth2/aus4yyq0us1XkCu5b697/v1/token",
+        "okta.oauth2.client.id":"0oa54u7mlnunCM4oJ697",
+        "okta.oauth2.client.secret":"RGL7EP8VnxxRP30sgEgwzRRj8hQEuIP_rjGtKay-",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"leads-producer.leads.uad",
+        "mail.slf.fromtext":"Prospr Service Layer (PROD)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"Ca.program@sunlife.com;calvinb.lee@sunlife.com",
+        "mail.slf.subject":"Platform notification (PROD): AEM to Salesforce service layer failure",
+        "mail.slf.body":""
+    },
     "params": [
     {
         "paramIn":"firstName",

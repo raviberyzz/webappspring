@@ -15,6 +15,6 @@ public interface EmailService {
 	//public String[] sendEmail(ServiceRequest serviceRequest) throws MessagingException;
     public String[] sendEmailProspr(Map<String,Object> serviceRequest) throws MessagingException;
 
-    public String[] sendEmailFaa(Map<String,Object> serviceRequest) throws MessagingException;
+    //public String[] sendEmailFaa(Map<String,Object> serviceRequest) throws MessagingException;
 
 }

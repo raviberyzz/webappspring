@@ -1,7 +1,57 @@
 {
     "serviceName":"ServiceRequestFaa",
-    "serviceURI":"someURI",
-    "authKey":"key",
+    "dev": {
+        "serviceURI":"https://lightgateway-uat.sunlifecorp.com:8443/gateway/leads-intake/0.1.0/leads",
+        "okta.oauth2.endpoint":"https://sunlifeapi.oktapreview.com/oauth2/aus1rbs7y9frIIm4f1d7/v1/token",
+        "okta.oauth2.client.id":"0oa7d6g887mWc841i1d7",
+        "okta.oauth2.client.secret":"Mrv2PddigdyknHD4eu-6nuvSA4BFLU8AXZV3JFPz",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"https://services.sunlife.com/okta/oauth2/xfunc.core.leads-intake-automation.create-leads.write",
+        "mail.slf.fromtext":"FAA Service Layer (DEV)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"DEV: FAA Service Layer: Rejected Lead",
+        "mail.slf.body":"The following FAA Lead was unsuccessfully submitted in the web-apps-cms-service application."
+    },
+    "sit": {
+        "serviceURI":"https://lightgateway-aizuat.sunlifecorp.com:8443/aizgateway/Leads-Intake-Producer/1.0/leads",
+        "okta.oauth2.endpoint":"https://sunlifeapi.oktapreview.com/oauth2/aus1rbs7y9frIIm4f1d7/v1/token",
+        "okta.oauth2.client.id":"0oa7d6g887mWc841i1d7",
+        "okta.oauth2.client.secret":"Mrv2PddigdyknHD4eu-6nuvSA4BFLU8AXZV3JFPz",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"https://services.sunlife.com/okta/oauth2/xfunc.core.leads-intake-automation.create-leads.write",
+        "mail.slf.fromtext":"FAA Service Layer (SIT)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"SIT: FAA Service Layer: Rejected Lead",
+        "mail.slf.body":"The following FAA Lead was unsuccessfully submitted in the web-apps-cms-service application (SIT)."
+    },
+    "stage": {
+        "serviceURI":"https://stage-services.sunlife.com/api/gateway/leads-intake/0.1.0/leads",
+        "okta.oauth2.endpoint":"https://sunlifeapi.oktapreview.com/oauth2/aus27kgk4sEZs9gmQ1d7/v1/token",
+        "okta.oauth2.client.id":"0oa8iqp49uwtMo9ZC1d7",
+        "okta.oauth2.client.secret":"6VMYplxn98-nCjO4Hw4HFajsDV788T5vqhElnpvf",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"https://services.sunlife.com/okta/oauth2/xfunc.core.leads-intake-automation.create-leads.write",
+        "mail.slf.fromtext":"FAA Service Layer (STAGE)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"Platform notification - DEV: AEM to Salesforce service layer failure",
+        "mail.slf.body":"GE: FAA Service Layer: Rejected Lead"
+    },
+    "prod": {
+        "serviceURI":"https://services.sunlife.com/api/gateway/leads-intake/0.1.0/leads",
+        "okta.oauth2.endpoint":"https://sunlifeapi.okta.com/oauth2/aus3q2qxdt7uGr3AQ5d7/v1/token",
+        "okta.oauth2.client.id":"0oa9zvifsqAQVKH7s5d7",
+        "okta.oauth2.client.secret":"CsFobVCXTs5QesRw2jD0l1urQgyXriIGczQwtxVc",
+        "okta.oauth2.grant-type":"client_credentials",
+        "okta.oauth2.scope":"https://services.sunlife.com/okta/oauth2/xfunc.core.leads-intake-automation.create-leads.write",
+        "mail.slf.fromtext":"FAA Service Layer (PROD)",
+        "mail.slf.fromaddress":"donotreply@sunlife.com",
+        "mail.slf.toaddress":"scrum.squad@sunlife.com;Leads.CallFailure.Notifications@sunlife.com",
+        "mail.slf.subject":"PROD: FAA Service Layer: Rejected Lead",
+        "mail.slf.body":"The following FAA Lead was unsuccessfully submitted in the web-apps-cms-service application."
+    },
     "params": [
         {
             "paramIn":"firstName",

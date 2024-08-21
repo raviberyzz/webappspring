@@ -33,24 +33,21 @@ import ca.sunlife.web.apps.cmsservice.EmailConfig;
 public class ServiceRequestProspr extends ServiceRequest{
 	private static final Logger logger = LogManager.getLogger(ServiceRequestProspr.class);
 	
+/*
 	@Value("${okta.oauth2.endpoint}")
 	private String tokenEndpoint;
-
 	@Value("${okta.oauth2.client.id}")
 	private String clientId;
-
 	@Value("${okta.oauth2.client.secret}")
 	private String clientSecret;
-
 	@Value("${okta.oauth2.grant-type}")
 	private String grantType;
-	
 	@Value("${okta.oauth2.scope}")
 	private String scope;
 	
 	@Value("${kafka.producer.endpoint}")
     private String kafkaProducerEndpoint;
-	
+
     @Value("${mail.slf.fromaddress}")
     private String fromAddress;
 	@Value("${mail.slf.fromtext}")
@@ -65,16 +62,17 @@ public class ServiceRequestProspr extends ServiceRequest{
     private String ccAddress;
     @Value("${mail.slf.bccaddress}")
     private String bccAddress;
-	
-//	private String serviceName;
+
+	private String serviceName;
 	private String serviceURI;
 	private String authKey;
+*/
 
 	@Override
 	public void init() {
 		setServiceFileName("ServiceRequestProspr.json");
 		super.init();
-
+/*
 		emailConfig.setFromAddress(fromAddress);
 		emailConfig.setFromText(fromText);
 		emailConfig.setToAddress(toAddress);
@@ -82,6 +80,7 @@ public class ServiceRequestProspr extends ServiceRequest{
 		emailConfig.setBccAddress(bccAddress);
 		emailConfig.setSubject(subject);
 		emailConfig.setBody(body);
+*/
 	}
 
 	@Override
@@ -109,7 +108,7 @@ public class ServiceRequestProspr extends ServiceRequest{
 		if (token != null) {
 			HttpHeaders header = apiGatewayService.buildHttpHeader(token, MediaType.APPLICATION_JSON_VALUE, "1", "2", "3");
 			try {
-				response = apiGatewayService.sendData(inputValues, header, kafkaProducerEndpoint);
+				response = apiGatewayService.sendData(inputValues, header, serviceEndpoint);
 			} catch (Exception e) {
 				logger.info(e);
 			}

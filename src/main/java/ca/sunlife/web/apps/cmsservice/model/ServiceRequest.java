@@ -21,6 +21,7 @@ import ca.sunlife.web.apps.cmsservice.service.EmailService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +32,15 @@ abstract public class ServiceRequest {
 	protected String serviceName;
 	protected String serviceFileName;
 	protected Set<ServiceParam> serviceParams;
+	
+	protected String tokenEndpoint;
+	protected String clientId;
+	protected String clientSecret;
+	protected String scope;
+    protected String serviceEndpoint;
+
+	@Value("${spring.profiles.active:dev}")
+	private String activeProfile;
 
 	@Autowired
     OktaTokenGenerator oktaTokenGenerator;
@@ -47,6 +57,10 @@ abstract public class ServiceRequest {
 	public void ServiceRequest() {}
 		
 	public void init() {
+
+		System.out.println("activeProfile: " + activeProfile);
+		logger.info("activeProfile: {}", activeProfile);
+
 		try {
 			InputStream is = ServiceUtil.readServiceFile(this, this.getServiceFileName());
 			ObjectMapper mapper = new ObjectMapper();
@@ -55,6 +69,20 @@ abstract public class ServiceRequest {
 
 			JsonNode params = jsonMap.get("params");
 			serviceParams = processParams(params);
+			
+			tokenEndpoint = getJsonNodeValue(jsonMap, "okta.oauth2.endpoint");
+			clientId = getJsonNodeValue(jsonMap, "okta.oauth2.client.id");
+			clientSecret = getJsonNodeValue(jsonMap, "okta.oauth2.client.secret");
+			scope = getJsonNodeValue(jsonMap, "okta.oauth2.scope");
+			serviceEndpoint = getJsonNodeValue(jsonMap, "serviceURI");
+
+			emailConfig.setFromAddress(getJsonNodeValue(jsonMap, "mail.slf.fromaddress"));
+			emailConfig.setFromText(getJsonNodeValue(jsonMap, "mail.slf.fromtext"));
+			emailConfig.setToAddress(getJsonNodeValue(jsonMap, "mail.slf.toaddress"));
+			emailConfig.setCcAddress(getJsonNodeValue(jsonMap, "mail.slf.ccaddress"));
+			emailConfig.setBccAddress(getJsonNodeValue(jsonMap, "mail.slf.bccaddress"));
+			emailConfig.setSubject(getJsonNodeValue(jsonMap, "mail.slf.subject"));
+			emailConfig.setBody(getJsonNodeValue(jsonMap, "mail.slf.body"));
 
 			logger.info(jsonMap);
 		} catch (Exception e) {
@@ -83,6 +111,20 @@ abstract public class ServiceRequest {
 		}
 		System.out.println("defined params: " + hs.toArray());
 		return hs;
+	}
+
+	private String getJsonNodeValue(JsonNode jsonMap, String nodeName) {
+		logger.info("envProfile: {}", activeProfile);
+
+		JsonNode env = jsonMap.get(activeProfile);
+		if (env != null) {
+			JsonNode node = env.get(nodeName);
+			if (node != null) {
+				return node.textValue();
+			}
+		}
+		logger.info("Unable to find -{}- or -{}- node for: {} service", activeProfile, nodeName, serviceName);
+		return null;
 	}
 	
 	public String getServiceFileName() {

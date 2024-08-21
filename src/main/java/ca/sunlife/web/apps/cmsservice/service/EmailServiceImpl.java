@@ -178,7 +178,7 @@ public class EmailServiceImpl implements EmailService{
         
        return msg;
     }
-    
+/*    
     @Override
     //public String[] sendEmailFaa(FaaServiceRequest serviceRequest) throws MessagingException {
     public String[] sendEmailFaa(Map<String,Object> serviceRequest) throws MessagingException {
@@ -294,7 +294,7 @@ public class EmailServiceImpl implements EmailService{
     	        
     	       return msg;
     	    }
-    
+*/
     private static boolean isValidStringWithRegex(String param, String regex) {
         if (regex == null || regex.length() == 0) {
             return true;
@@ -439,7 +439,7 @@ public class EmailServiceImpl implements EmailService{
         return internetAddress;
 
     }
-    
+/*    
     private InternetAddress getFromEmailAddressFaa() throws UnsupportedEncodingException, AddressException {
         InternetAddress internetAddress=null;
         if (emailConfig.getFromTextFaa() instanceof String) {
@@ -454,5 +454,5 @@ public class EmailServiceImpl implements EmailService{
         return internetAddress;
 
     }
-
+*/
 }

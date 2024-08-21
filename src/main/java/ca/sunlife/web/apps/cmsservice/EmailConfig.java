@@ -43,6 +43,7 @@ public class EmailConfig {
     private String charSet;
     
 //  FAA Email values
+/*
     @Value("${mail.slf.fromtext.faa}")
     private String fromTextFaa;
 	@Value("${mail.slf.subject.faa}")
@@ -55,7 +56,8 @@ public class EmailConfig {
     private String ccAddressFaa;
     @Value("${mail.slf.bccaddress.faa}")
     private String bccAddressFaa;
-    
+*/
+
     @Bean("emailProperties")
     public Properties getEmailProperties() {
         Properties props = new Properties();
@@ -144,6 +146,7 @@ public class EmailConfig {
         this.charSet = charSet;
     }
     
+/*
     public String getFromTextFaa() {
 		return fromTextFaa;
 	}
@@ -191,7 +194,6 @@ public class EmailConfig {
 	public void setBccAddressFaa(String bccAddressFaa) {
 		this.bccAddressFaa = bccAddressFaa;
 	}
-
-
+*/
 
 }

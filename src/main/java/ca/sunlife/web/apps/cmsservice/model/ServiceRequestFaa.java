@@ -24,16 +24,14 @@ import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
 @Component
 public class ServiceRequestFaa extends ServiceRequest{
 	private static final Logger logger = LogManager.getLogger(ServiceRequestFaa.class);
-	
+
+/*
 	@Value("${okta.oauth2.endpoint.faa}")
 	private String tokenEndpoint;
-
 	@Value("${okta.oauth2.client.id.faa}")
 	private String clientId;
-
 	@Value("${okta.oauth2.client.secret.faa}")
 	private String clientSecret;
-	
 	@Value("${okta.oauth2.scope.faa}")
 	private String scope;
 
@@ -54,17 +52,17 @@ public class ServiceRequestFaa extends ServiceRequest{
     private String ccAddress;
     @Value("${mail.slf.bccaddress.faa}")
     private String bccAddress;
-	
+
 	private String serviceName;
 	private String serviceURI;
 	private String authKey;
-	
+*/	
 
 	@Override
 	public void init() {
 		setServiceFileName("ServiceRequestFaa.json");
 		super.init();
-
+/*
 		emailConfig.setFromAddress(fromAddress);
 		emailConfig.setFromText(fromText);
 		emailConfig.setToAddress(toAddress);
@@ -72,6 +70,7 @@ public class ServiceRequestFaa extends ServiceRequest{
 		emailConfig.setBccAddress(bccAddress);
 		emailConfig.setSubject(subject);
 		emailConfig.setBody(body);
+		*/
 	}
 		
 /*
@@ -94,7 +93,7 @@ public class ServiceRequestFaa extends ServiceRequest{
 		String token = oktaTokenGenerator.generateToken(tokenEndpoint, scope, clientId, clientSecret);
 		try {
 			HttpHeaders header = apiGatewayService.buildHttpHeader(token, MediaType.APPLICATION_JSON_VALUE, "1", "2", "3");
-			response = apiGatewayService.sendData(inputValues, header, kafkaProducerEndpointFaa);
+			response = apiGatewayService.sendData(inputValues, header, serviceEndpoint);
 		} catch (Exception e) {
 			logger.info(e);
 		}

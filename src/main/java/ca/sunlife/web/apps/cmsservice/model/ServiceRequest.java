@@ -200,7 +200,7 @@ abstract public class ServiceRequest {
 	protected String getToken(String tokenEndpoint, String scope, String clientId, String clientSecret) {
 		String token = oktaTokenGenerator.generateToken(tokenEndpoint, scope, clientId, clientSecret);
 
-		token = "dummyValue";
+		//token = "dummyValue";
 		
 		if (token == null) {
 			logger.error("{} service failed to generate token", serviceName);

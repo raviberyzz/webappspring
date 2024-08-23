@@ -55,8 +55,8 @@ public class ServiceRequestCommunicationTest {
 		Map<String, Object> input = new HashMap<>();
 		input.put("firstName", "John");
 		input.put("coverageAmount", "500000");
-		input.put("costRange", "$100-$200");
-		input.put("email", "mailto:john@example.com");
+		input.put("costRange", "Hello,World 123");
+		input.put("email", "test.email+regex@example-domain.com");
 		input.put("templateId", "template123");
 		input.put("Language", "English");
 		input.put("debtPayment", "500000");

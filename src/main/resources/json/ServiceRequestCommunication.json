@@ -56,61 +56,61 @@
         {
             "paramIn":"firstName",
             "paramRequired":true,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-ZàâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ.'’()\\s-]{0,40}$",
             "paramOut":"firstName"
         },
         {
             "paramIn":"email",
             "paramRequired":true,
-            "paramRegex":"",
+            "paramRegex":"^(([\\w!#$%&'+\\-\\/=?\\^`{|}~]+([\\.]?[\\w!#$%&'*+\\-\\/=?\\^`{|}~]+)*)|(\\\"[\\w!#$%&'*+\\-\\/=?\\^`{|}~\"(),:;\\\\<>@\\[\\]]+\\\"))@(([a-zA-Z0-9]+([\\-]?[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})+)|(\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])){0,80}$",
             "paramOut":"email"
         },
         {
             "paramIn":"language",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z ,-]{0,40}$",
             "paramOut":"Language"
         },
         {
             "paramIn":"templateId",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9]{0,40}$",
             "paramOut":"templateId"
         },
         {
             "paramIn":"coverageAmount",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"coverageAmount"
         },
         {
             "paramIn":"costRange",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"costRange"
         },
         {
             "paramIn":"incomeReplacement",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"incomeReplacement"
         },
         {
             "paramIn":"debtPayment",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"debtPayment"
         },
         {
             "paramIn":"additionalExpense",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"additionalExpense"
         },
         {
             "paramIn":"totalEstimate",
             "paramRequired":false,
-            "paramRegex":"",
+            "paramRegex":"^[a-zA-Z0-9 ,-]{0,40}$",
             "paramOut":"totalEstimate"
         }]
 }

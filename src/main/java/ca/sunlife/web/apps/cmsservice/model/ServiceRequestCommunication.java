@@ -77,7 +77,8 @@ public class ServiceRequestCommunication extends ServiceRequest {
 	
 	@Override
 	public Map<String,Object> serviceValidation(Map<String,Object> inputs) {
-		Map<String,Object> map = restructureData(super.serviceValidation(inputs));
+		//Map<String,Object> map = restructureData(super.serviceValidation(inputs));
+		Map<String,Object> map = super.serviceValidation(inputs);
 		
 		return map;
 	}

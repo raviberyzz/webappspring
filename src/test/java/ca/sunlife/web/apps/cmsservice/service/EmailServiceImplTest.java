@@ -1,118 +1,108 @@
 package ca.sunlife.web.apps.cmsservice.service;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
-import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import org.junit.jupiter.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
-import ca.sunlife.web.apps.cmsservice.EmailConfig;
-import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
-import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@SpringBootTest
+import ca.sunlife.web.apps.cmsservice.EmailConfig;
+
+
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class EmailServiceImplTest {
 
-	@InjectMocks
-    EmailConfig emailConfig;
-
     @InjectMocks
-    private EmailServiceImpl emailService = new EmailServiceImpl();
+    private EmailServiceImpl emailService;
+
+    @Mock
+    private EmailConfig emailConfig;
+    
+    @Mock
+    private MimeMessage mimeMessage;
+
+    @Mock
+    private TransportDelegator transport;
 
     @BeforeEach
-    void init() {
-        MockitoAnnotations.openMocks(this);
-
-        ReflectionTestUtils.setField(emailConfig, "emailHost", "emailHost");
-        ReflectionTestUtils.setField(emailConfig, "emailPort", "emailPort");
-        ReflectionTestUtils.setField(emailConfig, "isAuth", Boolean.TRUE);
-        ReflectionTestUtils.setField(emailConfig, "isStarttlsEnabled", Boolean.TRUE);
-        ReflectionTestUtils.setField(emailConfig, "username", "username");
-        ReflectionTestUtils.setField(emailConfig, "password", "password");
-        ReflectionTestUtils.setField(emailConfig, "fromText", "fromText");
-        ReflectionTestUtils.setField(emailConfig, "subject", "subject");
-        ReflectionTestUtils.setField(emailConfig, "body", "body");
-        ReflectionTestUtils.setField(emailConfig, "fromAddress", "test@test.com");
-        ReflectionTestUtils.setField(emailConfig, "toAddress", "test2@test.com");
-        ReflectionTestUtils.setField(emailConfig, "ccAddress", "test3@test.com");
-        ReflectionTestUtils.setField(emailConfig, "bccAddress", "test4@test.com");
-        ReflectionTestUtils.setField(emailConfig, "mailType", "mailType");
-        ReflectionTestUtils.setField(emailConfig, "charSet", "charSet");
-
-        ReflectionTestUtils.setField(emailService, "emailConfig", emailConfig);
-
-        // ReflectionTestUtils.setField(emailConfig, "emailProperties",
-        // emailConfig.getEmailProperties());
-    }
-    @Test
-    void testSendEmail() throws MessagingException, ParseException, IOException {
-        ReflectionTestUtils.setField(emailConfig, "fromAddress", "test@test.com");
-        ReflectionTestUtils.setField(emailConfig, "toAddress", "test2@test.com");
-        TransportDelegator transport = mock(TransportDelegator.class);
-        ReflectionTestUtils.setField(emailService, "transport", transport);
-        doNothing().when(transport).sendEmail(any(Message.class));
-        ServiceRequest serviceRequest = TestServiceUtil.buildServiceRequest();
-        String[] result = emailService.sendEmail(serviceRequest);
-        verify(transport, times(1)).sendEmail(Mockito.any(MimeMessage.class));
-        Assertions.assertNotNull(result);
-    }
+    void setUp() {
+    	Properties props = new Properties();
+        props.put("mail.host", "emailhost");
+        props.put("mail.smtp.host", "smtpHost");
     
-    @Test
-    void testEmailNotSend() throws MessagingException, ParseException, IOException {
-
-        ServiceRequest serviceRequest = TestServiceUtil.buildServiceRequest();
-        String[] result = emailService.sendEmail(serviceRequest);
-        Assertions.assertNotNull(result);
+        when(emailConfig.getFromAddress()).thenReturn("from@example.com");
+        when(emailConfig.getToAddress()).thenReturn("to@example.com");
+        when(emailConfig.getSubject()).thenReturn("Test Subject");
+        when(emailConfig.getBody()).thenReturn("Test Body");
+        when(emailConfig.getEmailProperties()).thenReturn(props);
     }
 
     @Test
-    void testSendEmailNullFromAddress() throws MessagingException, ParseException {
-        ReflectionTestUtils.setField(emailConfig, "fromAddress", null);
-        ServiceRequest serviceRequest = TestServiceUtil.buildServiceRequest();
-        String[] result = emailService.sendEmail(serviceRequest);
-        Assertions.assertNotNull(result);
+    void testSendEmail() throws MessagingException {
+        Map<String, Object> serviceRequest = new HashMap<>();
+        serviceRequest.put("key1", "value1");
+        serviceRequest.put("key2", "value2");
 
-    }
-    
-    @Test
-    void testSendEmailNullToAddress() throws MessagingException, ParseException {
-        ReflectionTestUtils.setField(emailConfig, "fromAddress", "test@test.com");
-        ReflectionTestUtils.setField(emailConfig, "toAddress", null);
-        ServiceRequest serviceRequest = TestServiceUtil.buildServiceRequest();
-        String[] result = emailService.sendEmail(serviceRequest);
-        Assertions.assertNotNull(result);
+        String[] result = emailService.sendEmail("Test Body", serviceRequest);
+        assertArrayEquals(new String[]{
+                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}"
+        }, result);
 
+        verify(transport, times(1)).sendEmail(any(Message.class));
     }
 
     @Test
-    void testSendEmailEmptyToAddress() throws MessagingException, ParseException {
-        ReflectionTestUtils.setField(emailConfig, "toAddress", "");
-        ServiceRequest serviceRequest = TestServiceUtil.buildServiceRequest();
-        String[] result = emailService.sendEmail(serviceRequest);
-        Assertions.assertNotNull(result);
+    void testSendEmailProspr() throws MessagingException {
+        Map<String, Object> serviceRequest = new HashMap<>();
+        serviceRequest.put("key1", "value1");
+        serviceRequest.put("key2", "value2");
 
+        String[] result = emailService.sendEmailProspr(serviceRequest);
+        assertArrayEquals(new String[]{
+                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}"
+        }, result);
+
+        verify(transport, times(1)).sendEmail(any(Message.class));
     }
+	  @Test
+	  void testBuildEmailData() throws MessagingException, IOException {
+	  Map<String, Object> serviceRequest = new HashMap<>();
+	  serviceRequest.put("key1", "value1"); serviceRequest.put("key2", "value2");
+	  Message message = emailService.buildEmailData(mimeMessage,
+			  serviceRequest); 
+	  
+	  }
+	  
+	  @Test
+	  void testSendEmailWithEmailConfig() throws MessagingException{
+		  Map<String, Object> serviceRequest = new HashMap<>();
+	        serviceRequest.put("key1", "value1");
+	        serviceRequest.put("key2", "value2");
+	        String[] result =  emailService.sendEmail(emailConfig, serviceRequest);
+	        assertArrayEquals(new String[]{
+	                "{ \"Status\" : \"Success\", \"StatusCode\" : \"200\" ,\"StatusMsg\":\"Email sent successfully\"}"
+	        }, result);
 
-    @Test
-    void testSendEmailNullServiceRequest() throws MessagingException, ParseException {
-        ReflectionTestUtils.setField(emailConfig, "toAddress", "test@test.com");
-        ServiceRequest serviceRequest = null;
-        String[] result = emailService.sendEmail(serviceRequest);
-        Assertions.assertNotNull(result);
+	        verify(transport, times(1)).sendEmail(any(Message.class));
 
-    }
-
-
+	  }
 }

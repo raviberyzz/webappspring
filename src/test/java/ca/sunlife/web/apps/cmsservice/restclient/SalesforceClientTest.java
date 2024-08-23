@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
-import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.util.ServiceUtil;
-import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
 class SalesforceClientTest {
@@ -45,8 +45,11 @@ class SalesforceClientTest {
     }
     @Test
     void testPostData() throws ParseException, JsonProcessingException {
+    	
+    	Map<String,Object> data = new HashMap<>();
+    	data.put("key1", "value1");
+    	data.put("key2", "value2");
         
-        ServiceRequest data = TestServiceUtil.buildServiceRequest();
         CmsResponse cmsResponse = new CmsResponse();
         cmsResponse.setStatusCode(200);
         
@@ -74,7 +77,9 @@ class SalesforceClientTest {
     @Test
     void testValidateToken() throws ParseException, JsonProcessingException {
         
-        ServiceRequest data = TestServiceUtil.buildServiceRequest();
+    	Map<String,Object> data = new HashMap<>();
+    	data.put("key1", "value1");
+    	data.put("key2", "value2");
         CmsResponse cmsResponse = new CmsResponse();
         cmsResponse.setStatusCode(200);
         

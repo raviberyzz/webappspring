@@ -1,10 +1,11 @@
 package ca.sunlife.web.apps.cmsservice.service;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 
@@ -16,22 +17,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.http.HttpHeaders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import ca.sunlife.web.apps.cmsservice.authentication.OktaTokenGenerator;
 import ca.sunlife.web.apps.cmsservice.model.CmsResponse;
-import ca.sunlife.web.apps.cmsservice.model.ServiceRequest;
 import ca.sunlife.web.apps.cmsservice.restclient.KafkaClient;
-import ca.sunlife.web.apps.cmsservice.utils.TestServiceUtil;
 
 @SpringBootTest
 
 public class ApiGatewayServiceImplTest {
-
 
 	@Mock
 	private KafkaClient kafkaClient = mock(KafkaClient.class);
@@ -45,72 +41,25 @@ public class ApiGatewayServiceImplTest {
 	@InjectMocks
 	private ApiGatewayService apiGatewayService = new ApiGatewayServiceImpl();
 
-	private ServiceRequest serviceRequest;
-
-	private CmsResponse cmsResponse;
-
 	@BeforeEach
 	public void setup() throws ParseException {
 		MockitoAnnotations.openMocks(this);
-
-		serviceRequest = TestServiceUtil.buildServiceRequest();
-		cmsResponse = new CmsResponse();
-		cmsResponse.setStatusCode(200);
-
-		ReflectionTestUtils.setField(oktaTokenGenerator, "tokenEndpoint", "url");
-		ReflectionTestUtils.setField(oktaTokenGenerator, "grantType", "grant_type");
-		ReflectionTestUtils.setField(oktaTokenGenerator, "scope", "scope");
 	}
 
 	@Test
 	void testSendData() throws JsonProcessingException, ParseException, MessagingException {
-		Mockito.when(oktaTokenGenerator.generateToken()).thenReturn("21314234");
-
-		Mockito.when(kafkaClient.postData(Mockito.any(HttpEntity.class))).thenReturn(cmsResponse);
-
-		CmsResponse response = apiGatewayService.sendData(serviceRequest);
-
-		verify(oktaTokenGenerator, times(1)).generateToken();
-
-		verify(kafkaClient, times(1)).postData(Mockito.any(HttpEntity.class));
-
-		Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK.value());
-
-	}
-
-	@Test
-	void testSendDataFailed() throws JsonProcessingException, ParseException, MessagingException {
-		Mockito.when(emailService.sendEmail(Mockito.any(ServiceRequest.class))).thenReturn(null);
-
-		Mockito.when(oktaTokenGenerator.generateToken()).thenReturn("21314234");
-
-		Mockito.when(kafkaClient.postData(Mockito.any(HttpEntity.class))).thenReturn(null);
-
-		CmsResponse response = apiGatewayService.sendData(serviceRequest);
-
-		verify(oktaTokenGenerator, times(1)).generateToken();
-
-		verify(kafkaClient, times(1)).postData(Mockito.any(HttpEntity.class));
-		verify(emailService, times(1)).sendEmail(Mockito.any(ServiceRequest.class));
-
-		Assertions.assertEquals(500, response.getStatusCode());
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	void testSendDataWithInvalidToken() throws JsonProcessingException, ParseException, MessagingException {
-		Mockito.when(emailService.sendEmail(Mockito.any(ServiceRequest.class))).thenReturn(null);
-
-		Mockito.when(oktaTokenGenerator.generateToken()).thenReturn(null);
-
-		CmsResponse response = apiGatewayService.sendData(serviceRequest);
-
-		verify(oktaTokenGenerator, times(1)).generateToken();
-		verify(emailService, times(1)).sendEmail(Mockito.any(ServiceRequest.class));
-
-		Assertions.assertEquals(500, response.getStatusCode());
-
+		Map<String, Object> testData = new HashMap<>();
+		testData.put("firstName", "localTestFirstname");
+		testData.put("latName", "localTestLastName");
+		testData.put("email", "abc@sunlife.com");
+		testData.put("language", "English");
+		CmsResponse expectedResponse = new CmsResponse();
+		expectedResponse.setStatusCode(200);
+		HttpHeaders headers = apiGatewayService.buildHttpHeader("bearerToken", "application/json", "xauth",
+				"xtraceability", "xcorelation");
+		when(kafkaClient.postData(Mockito.any(), Mockito.any())).thenReturn(expectedResponse);
+		CmsResponse response = apiGatewayService.sendData(testData, headers, "endpointUrl");
+		Assertions.assertEquals(expectedResponse.getStatusCode(), response.getStatusCode());
 	}
 
 }
